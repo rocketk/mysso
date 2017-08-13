@@ -12,6 +12,13 @@ public class TicketGrantingTicket extends AbstractTicket{
     private List<String> serviceTicketIds;
     private List<String> tokenIds;
 
+    public TicketGrantingTicket() {
+    }
+
+    public TicketGrantingTicket(String id, long creationTime, String principalId) {
+        super(id, creationTime, principalId);
+    }
+
     public List<String> getServiceTicketIds() {
         return serviceTicketIds;
     }

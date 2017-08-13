@@ -1,19 +1,17 @@
-import mysso.serviceprovider.InMemoryServiceProviderRegistry;
-import mysso.serviceprovider.ServiceProvider;
-import mysso.serviceprovider.ServiceProviderRegistry;
-import org.apache.commons.collections4.ListUtils;
+package mysso.serviceprovider;
+
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by pengyu on 2017/8/9.
+ * Created by pengyu on 2017/8/13.
  */
-public class InMemoryServiceProviderRegistryTest {
+public abstract class AbstractServiceProviderRegistryTest {
 
     @Test
     public void verifyCRUD() {
@@ -22,14 +20,15 @@ public class InMemoryServiceProviderRegistryTest {
         List<String> logoutUrlsOfA = new ArrayList<>();
         logoutUrlsOfA.add("http://www.example.com/a/logout");
         List<String> logoutUrlsOfB = new ArrayList<>();
-        logoutUrlsOfA.add("http://www.example.com/b/logout");
+        logoutUrlsOfB.add("http://www.example.com/b/logout");
         Map<String, ServiceProvider> map = new HashMap();
         ServiceProvider spA = new ServiceProvider(
                 spIdA, "ServiceA", "this is Service A", "secretkeyA", logoutUrlsOfA);
         ServiceProvider spB = new ServiceProvider(
                 spIdB, "ServiceB", "this is Service B", "secretkeyB", logoutUrlsOfB);
-        ServiceProviderRegistry spr = new InMemoryServiceProviderRegistry(map);
         try {
+            ServiceProviderRegistry spr = getNewServiceProviderRegistry();
+            Assert.assertNotNull(spr);
             // verify save
             spr.save(spA);
             // verify getAll
@@ -54,4 +53,30 @@ public class InMemoryServiceProviderRegistryTest {
             Assert.fail(e.getMessage());
         }
     }
+
+    @Test
+    public void verifyUpdateExistingServiceProvider() {
+        String spId = "sp-aaaa";
+        List<String> logoutUrlsOfA = new ArrayList<>();
+        logoutUrlsOfA.add("http://www.example.com/a/logout");
+        Map<String, ServiceProvider> map = new HashMap();
+        ServiceProvider sp = new ServiceProvider(
+                spId, "ServiceA", "this is Service A", "secretkeyA", logoutUrlsOfA);
+        try {
+            ServiceProviderRegistry spr = getNewServiceProviderRegistry();
+            Assert.assertNotNull(spr);
+            spr.save(sp);
+            Assert.assertEquals(1, spr.getAll().size());
+            Assert.assertEquals(sp, spr.get(spId));
+            ServiceProvider sp2 = new ServiceProvider(
+                    spId, "ServiceA_updated", "updated service a", "updated secretkey", logoutUrlsOfA);
+            spr.save(sp2);
+            Assert.assertEquals(1, spr.getAll().size());
+            Assert.assertEquals(sp2, spr.get(spId));
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    protected abstract ServiceProviderRegistry getNewServiceProviderRegistry();
 }

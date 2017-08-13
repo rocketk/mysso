@@ -6,10 +6,24 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 /**
  * Created by pengyu on 2017/8/5.
  */
-public class AbstractGrantedTicket extends AbstractTicket {
+public abstract class AbstractGrantedTicket extends AbstractTicket {
     protected String ticketGrantingTicketId;
     protected String serviceProviderId;
     protected long expiredTime;
+
+    public AbstractGrantedTicket() {
+    }
+
+    public AbstractGrantedTicket(String id, long creationTime, String principalId) {
+        super(id, creationTime, principalId);
+    }
+
+    public AbstractGrantedTicket(String id, long creationTime, String principalId, String ticketGrantingTicketId, String serviceProviderId, long expiredTime) {
+        super(id, creationTime, principalId);
+        this.ticketGrantingTicketId = ticketGrantingTicketId;
+        this.serviceProviderId = serviceProviderId;
+        this.expiredTime = expiredTime;
+    }
 
     @Override
     public boolean isExpired() {

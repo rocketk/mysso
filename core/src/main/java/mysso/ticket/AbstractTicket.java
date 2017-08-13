@@ -1,8 +1,5 @@
 package mysso.ticket;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.io.Serializable;
 
 /**
@@ -12,6 +9,15 @@ public abstract class AbstractTicket implements Serializable {
     protected String id;
     protected long creationTime;
     protected String principalId;
+
+    public AbstractTicket() {
+    }
+
+    public AbstractTicket(String id, long creationTime, String principalId) {
+        this.id = id;
+        this.creationTime = creationTime;
+        this.principalId = principalId;
+    }
 
     public abstract boolean isExpired();
 
