@@ -31,10 +31,10 @@ public abstract class AbstractTicketRegistryTest {
             assertTrue(ticketRegistry.delete(ticket1.getId(), ticket1.getClass()));
             assertNull(ticketRegistry.get(ticket1.getId(), ticket1.getClass()));
             assertNotNull(ticketRegistry.get(ticket2.getId(), ticket1.getClass()));
-            assertEquals(1, ticketRegistry.getAll(ticket1.getClass()));
+            assertEquals(1, ticketRegistry.getAll(ticket1.getClass()).size());
             assertTrue(ticketRegistry.delete(ticket2.getId(), ticket1.getClass()));
             assertNull(ticketRegistry.get(ticket2.getId(), ticket1.getClass()));
-            assertEquals(0, ticketRegistry.getAll(ticket1.getClass()));
+            assertEquals(0, ticketRegistry.getAll(ticket1.getClass()).size());
             // verify delete ticket that does not exist
             assertFalse(ticketRegistry.delete(ticket1.getId(), ticket1.getClass()));
             assertFalse(ticketRegistry.delete(ticket2.getId(), ticket1.getClass()));
@@ -96,8 +96,8 @@ public abstract class AbstractTicketRegistryTest {
         now = System.currentTimeMillis();
         Token tk2 = new Token("tk-002", now, "principal1", "tgt-001", "sp-001", now + 10000);
         List<String> tokenIds = new ArrayList<>();
-        serviceTicketIds1.add(tk1.getId());
-        serviceTicketIds1.add(tk2.getId());
+        tokenIds.add(tk1.getId());
+        tokenIds.add(tk2.getId());
         tgt.setTokenIds(tokenIds);
         // save those tickets
         TicketRegistry ticketRegistry = getNewTicketRegistry();
@@ -107,14 +107,14 @@ public abstract class AbstractTicketRegistryTest {
         ticketRegistry.add(st2);
         ticketRegistry.add(tk1);
         ticketRegistry.add(tk2);
-        assertEquals(1, ticketRegistry.getAll(TicketGrantingTicket.class));
-        assertEquals(2, ticketRegistry.getAll(ServiceTicket.class));
-        assertEquals(2, ticketRegistry.getAll(Token.class));
+        assertEquals(1, ticketRegistry.getAll(TicketGrantingTicket.class).size());
+        assertEquals(2, ticketRegistry.getAll(ServiceTicket.class).size());
+        assertEquals(2, ticketRegistry.getAll(Token.class).size());
         // verify delete children after deleted tgt
         assertTrue(ticketRegistry.delete(tgt.getId(), TicketGrantingTicket.class));
-        assertEquals(0, ticketRegistry.getAll(TicketGrantingTicket.class));
-        assertEquals(0, ticketRegistry.getAll(ServiceTicket.class));
-        assertEquals(0, ticketRegistry.getAll(Token.class));
+        assertEquals(0, ticketRegistry.getAll(TicketGrantingTicket.class).size());
+        assertEquals(0, ticketRegistry.getAll(ServiceTicket.class).size());
+        assertEquals(0, ticketRegistry.getAll(Token.class).size());
     }
 
     @Test
