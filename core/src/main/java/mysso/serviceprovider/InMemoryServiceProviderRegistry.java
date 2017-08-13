@@ -1,7 +1,9 @@
 package mysso.serviceprovider;
 
+import org.springframework.util.Assert;
+
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,21 +19,35 @@ public class InMemoryServiceProviderRegistry implements ServiceProviderRegistry 
 
     @Override
     public ServiceProvider get(String spId) {
-        return null;
+        Assert.notNull(map);
+        return map.get(spId);
     }
 
     @Override
-    public List<ServiceProvider> getAll() {
-        return null;
+    public Map<String, ServiceProvider> getAll() {
+        Assert.notNull(map);
+        return new HashMap<>(map);
     }
 
     @Override
     public boolean delete(ServiceProvider sp) {
+        Assert.notNull(map);
+        Assert.notNull(sp);
+        synchronized (this) {
+            if (map.containsKey(sp.getId())) {
+                map.remove(sp.getId());
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public void save(ServiceProvider sp) {
+        Assert.notNull(map);
+        Assert.notNull(sp);
+        map.put(sp.getId(), sp);
+        Assert.notNull(map);
     }
 
     public void setMap(Map<String, ServiceProvider> map) {

@@ -28,8 +28,6 @@ public class InMemoryServiceProviderRegistryTest {
                 spIdA, "ServiceA", "this is Service A", "secretkeyA", logoutUrlsOfA);
         ServiceProvider spB = new ServiceProvider(
                 spIdB, "ServiceB", "this is Service B", "secretkeyB", logoutUrlsOfB);
-        map.put(spIdA, spA);
-        map.put(spIdB, spB);
         ServiceProviderRegistry spr = new InMemoryServiceProviderRegistry(map);
         try {
             // verify save
@@ -41,7 +39,6 @@ public class InMemoryServiceProviderRegistryTest {
             spr.save(spB);
             Assert.assertEquals(2, spr.getAll().size());
             Assert.assertEquals(spB, spr.get(spIdB));
-
             // verify delete
             Assert.assertTrue(spr.delete(spB));
             Assert.assertEquals(1, spr.getAll().size());
