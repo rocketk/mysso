@@ -1,4 +1,6 @@
-package mysso.serviceprovider;
+package mysso.serviceprovider.registry;
+
+import mysso.serviceprovider.ServiceProvider;
 
 import java.util.HashMap;
 

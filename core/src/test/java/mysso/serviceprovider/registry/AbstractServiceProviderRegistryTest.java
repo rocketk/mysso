@@ -1,5 +1,6 @@
-package mysso.serviceprovider;
+package mysso.serviceprovider.registry;
 
+import mysso.serviceprovider.ServiceProvider;
 import org.junit.Assert;
 import org.junit.Test;
 

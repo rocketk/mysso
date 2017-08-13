@@ -1,5 +1,6 @@
-package mysso.serviceprovider;
+package mysso.serviceprovider.registry;
 
+import mysso.serviceprovider.ServiceProvider;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
