@@ -17,7 +17,7 @@ public class ServiceProvider implements Serializable {
     protected String secretKey;
     protected List<String> logoutUrls;
     protected Map<String, String> neededAttributes;
-    protected AccessServiceProviderPolicy accessServiceProviderPolicy = AccessServiceProviderPolicy.ACCESS_ALL;
+    protected AccessServiceProviderPolicy accessServiceProviderPolicy = AccessServiceProviderPolicy.ALLOW_ALL;
 
     public ServiceProvider() {
     }
