@@ -1,5 +1,8 @@
 package mysso.serviceprovider;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -94,4 +97,38 @@ public class ServiceProvider implements Serializable {
     public void setAccessServiceProviderPolicy(AccessServiceProviderPolicy accessServiceProviderPolicy) {
         this.accessServiceProviderPolicy = accessServiceProviderPolicy;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final ServiceProvider that = (ServiceProvider) o;
+
+        return new EqualsBuilder().append(this.id, that.id)
+                .append(this.name, that.name)
+                .append(this.description, that.description)
+                .append(this.secretKey, that.secretKey)
+                .append(this.logoutUrls, that.logoutUrls)
+                .append(this.neededAttributes, that.neededAttributes)
+                .append(this.accessServiceProviderPolicy, that.accessServiceProviderPolicy)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(id)
+                .append(name)
+                .append(description)
+                .append(secretKey)
+                .append(logoutUrls)
+                .append(neededAttributes)
+                .append(accessServiceProviderPolicy)
+                .toHashCode();
+    }
+
 }
