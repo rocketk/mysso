@@ -8,25 +8,25 @@ import java.io.Serializable;
 public abstract class AbstractTicket implements Serializable {
     protected String id;
     protected long creationTime;
-    protected String principalId;
+    protected String credentialId;
 
     public AbstractTicket() {
     }
 
-    public AbstractTicket(String id, long creationTime, String principalId) {
+    public AbstractTicket(String id, long creationTime, String credentialId) {
         this.id = id;
         this.creationTime = creationTime;
-        this.principalId = principalId;
+        this.credentialId = credentialId;
     }
 
     public abstract boolean isExpired();
 
-    public String getPrincipalId() {
-        return principalId;
+    public String getCredentialId() {
+        return credentialId;
     }
 
-    public void setPrincipalId(String principalId) {
-        this.principalId = principalId;
+    public void setCredentialId(String credentialId) {
+        this.credentialId = credentialId;
     }
 
     public String getId() {
@@ -47,7 +47,7 @@ public abstract class AbstractTicket implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("{}(id: {}, creationTime: {}, principalId: {})",
-                getClass().getSimpleName(), id, creationTime, principalId);
+        return String.format("{}(id: {}, creationTime: {}, credentialId: {})",
+                getClass().getSimpleName(), id, creationTime, credentialId);
     }
 }

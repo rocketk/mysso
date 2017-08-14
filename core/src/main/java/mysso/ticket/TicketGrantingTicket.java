@@ -15,8 +15,8 @@ public class TicketGrantingTicket extends AbstractTicket{
     public TicketGrantingTicket() {
     }
 
-    public TicketGrantingTicket(String id, long creationTime, String principalId) {
-        super(id, creationTime, principalId);
+    public TicketGrantingTicket(String id, long creationTime, String credentialId) {
+        super(id, creationTime, credentialId);
     }
 
     public List<String> getServiceTicketIds() {
@@ -53,7 +53,7 @@ public class TicketGrantingTicket extends AbstractTicket{
 
         return new EqualsBuilder().append(this.id, that.id)
                 .append(this.creationTime, that.creationTime)
-                .append(this.principalId, that.principalId)
+                .append(this.credentialId, that.credentialId)
                 .append(this.serviceTicketIds, that.serviceTicketIds)
                 .isEquals();
     }
@@ -62,7 +62,7 @@ public class TicketGrantingTicket extends AbstractTicket{
     public int hashCode() {
         return new HashCodeBuilder().append(id)
                 .append(creationTime)
-                .append(principalId)
+                .append(credentialId)
                 .append(serviceTicketIds)
                 .toHashCode();
     }

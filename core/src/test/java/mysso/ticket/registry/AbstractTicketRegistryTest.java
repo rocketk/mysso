@@ -45,7 +45,7 @@ public abstract class AbstractTicketRegistryTest {
 
     @Test
     public void verifyTicketGrantingTicketCRUD() {
-        TicketGrantingTicket tgt1 = new TicketGrantingTicket("tgt-001", System.currentTimeMillis(), "principal1");
+        TicketGrantingTicket tgt1 = new TicketGrantingTicket("tgt-001", System.currentTimeMillis(), "credentialId");
         List<String> serviceTicketIds1 = new ArrayList<>();
         serviceTicketIds1.add("st-001");
         serviceTicketIds1.add("st-002");
@@ -61,40 +61,40 @@ public abstract class AbstractTicketRegistryTest {
     @Test
     public void verifyServiceTicketCRUD() {
         long now = System.currentTimeMillis();
-        ServiceTicket st1 = new ServiceTicket("st-001", now, "principal1", "tgt-001", "sp-001", now + 10000);
+        ServiceTicket st1 = new ServiceTicket("st-001", now, "credentialId", "tgt-001", "sp-001", now + 10000);
         now = System.currentTimeMillis();
-        ServiceTicket st2 = new ServiceTicket("st-002", now, "principal1", "tgt-001", "sp-001", now + 10000);
+        ServiceTicket st2 = new ServiceTicket("st-002", now, "credentialId", "tgt-001", "sp-001", now + 10000);
         verifyCRUD(st1, st2);
     }
 
     @Test
     public void verifyTokenCRUD() {
         long now = System.currentTimeMillis();
-        Token tk1 = new Token("tk-001", now, "principal1", "tgt-001", "sp-001", now + 10000);
+        Token tk1 = new Token("tk-001", now, "credentialId", "tgt-001", "sp-001", now + 10000);
         now = System.currentTimeMillis();
-        Token tk2 = new Token("tk-002", now, "principal1", "tgt-001", "sp-001", now + 10000);
+        Token tk2 = new Token("tk-002", now, "credentialId", "tgt-001", "sp-001", now + 10000);
         verifyCRUD(tk1, tk2);
     }
 
     @Test
     public void verifyDeleteChildrenAfterDeletedTGT() {
         // create the ticket granting ticket
-        TicketGrantingTicket tgt = new TicketGrantingTicket("tgt-001", System.currentTimeMillis(), "principal1");
+        TicketGrantingTicket tgt = new TicketGrantingTicket("tgt-001", System.currentTimeMillis(), "credentialId");
 
         // create the service tickets
         long now = System.currentTimeMillis();
-        ServiceTicket st1 = new ServiceTicket("st-001", now, "principal1", "tgt-001", "sp-001", now + 10000);
+        ServiceTicket st1 = new ServiceTicket("st-001", now, "credentialId", "tgt-001", "sp-001", now + 10000);
         now = System.currentTimeMillis();
-        ServiceTicket st2 = new ServiceTicket("st-002", now, "principal1", "tgt-001", "sp-001", now + 10000);
+        ServiceTicket st2 = new ServiceTicket("st-002", now, "credentialId", "tgt-001", "sp-001", now + 10000);
         List<String> serviceTicketIds1 = new ArrayList<>();
         serviceTicketIds1.add(st1.getId());
         serviceTicketIds1.add(st2.getId());
         tgt.setServiceTicketIds(serviceTicketIds1);
         // create the tokens
         now = System.currentTimeMillis();
-        Token tk1 = new Token("tk-001", now, "principal1", "tgt-001", "sp-001", now + 10000);
+        Token tk1 = new Token("tk-001", now, "credentialId", "tgt-001", "sp-001", now + 10000);
         now = System.currentTimeMillis();
-        Token tk2 = new Token("tk-002", now, "principal1", "tgt-001", "sp-001", now + 10000);
+        Token tk2 = new Token("tk-002", now, "credentialId", "tgt-001", "sp-001", now + 10000);
         List<String> tokenIds = new ArrayList<>();
         tokenIds.add(tk1.getId());
         tokenIds.add(tk2.getId());

@@ -67,7 +67,7 @@ public abstract class AbstractGrantedTicket extends AbstractTicket {
 
         return new EqualsBuilder().append(this.id, that.id)
                 .append(this.creationTime, that.creationTime)
-                .append(this.principalId, that.principalId)
+                .append(this.credentialId, that.credentialId)
                 .append(this.ticketGrantingTicketId, that.ticketGrantingTicketId)
                 .append(this.serviceProviderId, that.serviceProviderId)
                 .append(this.expiredTime, that.expiredTime)
@@ -78,7 +78,7 @@ public abstract class AbstractGrantedTicket extends AbstractTicket {
     public int hashCode() {
         return new HashCodeBuilder().append(id)
                 .append(creationTime)
-                .append(principalId)
+                .append(credentialId)
                 .append(ticketGrantingTicketId)
                 .append(serviceProviderId)
                 .append(expiredTime)
