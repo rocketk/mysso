@@ -18,11 +18,11 @@ public interface CentralTicketManager extends Serializable {
 
     /**
      * grant a ServiceTicket.
-     * @param tgtId not null, existing, valid
-     * @param spId not null, existing
+     * @param tgt not null, existing, valid
+     * @param sp not null, existing
      * @return
      */
-    ServiceTicket grantServiceTicket(String tgtId, String spId);
+    ServiceTicket grantServiceTicket(TicketGrantingTicket tgt, ServiceProvider sp);
 
     /**
      * grant a Token.

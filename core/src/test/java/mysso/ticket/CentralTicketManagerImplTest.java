@@ -6,6 +6,7 @@ import mysso.ticket.registry.InMemoryTicketRegistry;
 import mysso.ticket.registry.TicketRegistry;
 import org.junit.Test;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -22,6 +23,9 @@ public class CentralTicketManagerImplTest {
             TicketGrantingTicket tgt = manager.createTicketGrantingTicket(credential);
             assertNotNull(tgt);
             assertNotNull(tgt.getId());
+            TicketGrantingTicket tgtFromRegistry = manager.getTicketGrantingTicket(tgt.getId());
+            assertNotNull(tgtFromRegistry);
+            assertEquals(tgt, tgtFromRegistry);
             manager.destroyTicketGrantingTicket(tgt.getId());
         } catch (TicketException e){
             fail(e.getMessage());
@@ -37,15 +41,13 @@ public class CentralTicketManagerImplTest {
     }
 
     @Test
-    public void verifyGetTicketGrantingTicket() {
+    public void verifyValidateServiceTicket() {
+
     }
 
     @Test
-    public void verifyGetServiceTicket() {
-    }
+    public void verifyValidateToken() {
 
-    @Test
-    public void verifyGetToken() {
     }
 
     @Test

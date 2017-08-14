@@ -1,6 +1,6 @@
 package mysso.authentication.principal;
 
-import mysso.authentication.AuthenticationException;
+import mysso.authentication.exception.AuthenticationException;
 
 import javax.validation.constraints.NotNull;
 

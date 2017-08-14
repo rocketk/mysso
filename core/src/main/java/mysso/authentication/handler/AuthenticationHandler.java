@@ -1,6 +1,6 @@
 package mysso.authentication.handler;
 
-import mysso.authentication.AuthenticationException;
+import mysso.authentication.exception.AuthenticationException;
 import mysso.authentication.principal.Credential;
 
 /**

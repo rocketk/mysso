@@ -1,11 +1,14 @@
 package mysso.authentication;
 
+import mysso.authentication.exception.AuthenticationException;
 import mysso.ticket.CentralTicketManager;
 import mysso.authentication.handler.AuthenticationHandler;
 import mysso.authentication.principal.Credential;
 import mysso.authentication.principal.Principal;
 import mysso.authentication.principal.PrincipalResolver;
+import mysso.ticket.ServiceTicket;
 import mysso.ticket.TicketGrantingTicket;
+import mysso.ticket.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +52,16 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
             return new Authentication(null, new Date(), null, null,
                     true, String.format("%s failed authenticating, caused by: %s", credential.getId(), e.getMessage()));
         }
+    }
+
+    @Override
+    public Assertion validateServiceTicket(ServiceTicket serviceTicket) {
+        return null;
+    }
+
+    @Override
+    public Assertion validateToken(Token token) {
+        return null;
     }
 
     public void setAuthenticationHandler(AuthenticationHandler authenticationHandler) {

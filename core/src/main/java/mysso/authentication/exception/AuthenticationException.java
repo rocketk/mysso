@@ -1,4 +1,4 @@
-package mysso.authentication;
+package mysso.authentication.exception;
 
 /**
  * Created by pengyu on 2017/8/5.
