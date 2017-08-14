@@ -41,13 +41,13 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
                         ticketGrantingTicket,
                         new HashMap<String, Object>(),
                         true,
-                        String.format("{} successfully authenticated", credential.getId()));
+                        String.format("%s successfully authenticated", credential.getId()));
             } else {
                 throw new AuthenticationException();
             }
         } catch (AuthenticationException e) {
             return new Authentication(null, new Date(), null, null,
-                    true, String.format("{} failed authenticating, caused by: {}", credential.getId(), e.getMessage()));
+                    true, String.format("%s failed authenticating, caused by: %s", credential.getId(), e.getMessage()));
         }
     }
 

@@ -1,6 +1,7 @@
 package mysso.ticket;
 
 import mysso.authentication.principal.Credential;
+import mysso.ticket.exception.TicketException;
 import mysso.ticket.registry.InMemoryTicketRegistry;
 import mysso.ticket.registry.TicketRegistry;
 import org.junit.Test;

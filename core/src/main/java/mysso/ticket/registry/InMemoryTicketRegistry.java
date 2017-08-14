@@ -1,6 +1,9 @@
 package mysso.ticket.registry;
 
 import mysso.ticket.*;
+import mysso.ticket.exception.DuplicateIdException;
+import mysso.ticket.exception.TicketException;
+import mysso.ticket.exception.UnsupportTicketTypeException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
@@ -26,10 +29,10 @@ public class InMemoryTicketRegistry implements TicketRegistry {
         } else if (ticket instanceof Token) {
             ticketMap = tkMap;
         } else {
-            throw new TicketException(String.format(TicketException.UNSUPPORTED_TICKET_TYPE, ticket.getClass()));
+            throw new UnsupportTicketTypeException(String.format("the ticket type is unsupported: %s", ticket.getClass()));
         }
         if (ticketMap.containsKey(ticket.getId())) {
-            throw new TicketException(String.format(TicketException.DUPLICATED_ID, ticket.getId()));
+            throw new DuplicateIdException(String.format("the id of the ticket to be added has already exists: %s", ticket.getId()));
         }
         ticketMap.put(ticket.getId(), ticket);
     }
@@ -52,7 +55,7 @@ public class InMemoryTicketRegistry implements TicketRegistry {
                 return true;
             }
         } else {
-            throw new TicketException(String.format(TicketException.UNSUPPORTED_TICKET_TYPE, clazz));
+            throw new UnsupportTicketTypeException(String.format("the ticket type is unsupported: %s", clazz));
         }
         return false;
     }
@@ -85,7 +88,7 @@ public class InMemoryTicketRegistry implements TicketRegistry {
         } else if (StringUtils.equals(Token.class.getCanonicalName(), clazz.getCanonicalName())) {
             ticketMap = tkMap;
         } else {
-            throw new TicketException(String.format(TicketException.UNSUPPORTED_TICKET_TYPE, clazz));
+            throw new UnsupportTicketTypeException(String.format("the ticket type is unsupported: %s", clazz));
         }
         return (T) ticketMap.get(id);
     }
@@ -101,7 +104,7 @@ public class InMemoryTicketRegistry implements TicketRegistry {
         } else if (StringUtils.equals(Token.class.getCanonicalName(), clazz.getCanonicalName())) {
             ticketMap = tkMap;
         } else {
-            throw new TicketException(String.format(TicketException.UNSUPPORTED_TICKET_TYPE, clazz));
+            throw new UnsupportTicketTypeException(String.format("the ticket type is unsupported: %s", clazz));
         }
         return new HashMap<>(ticketMap);
     }

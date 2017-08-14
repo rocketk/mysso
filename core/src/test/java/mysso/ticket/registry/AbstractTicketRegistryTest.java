@@ -1,6 +1,9 @@
 package mysso.ticket.registry;
 
 import mysso.ticket.*;
+import mysso.ticket.exception.DuplicateIdException;
+import mysso.ticket.exception.TicketException;
+import mysso.ticket.exception.UnsupportTicketTypeException;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -129,26 +132,22 @@ public abstract class AbstractTicketRegistryTest {
         try {
             ticketRegistry.add(unsupportedTicket);
             fail("an TicketException should be throw");
-        } catch (TicketException e) {
-            assertEquals(String.format(TicketException.UNSUPPORTED_TICKET_TYPE, unsupportedTicket.getClass()), e.getMessage());
+        } catch (UnsupportTicketTypeException e) {
         }
         try {
             ticketRegistry.delete("any_id", unsupportedTicket.getClass());
             fail("an TicketException should be throw");
-        } catch (TicketException e) {
-            assertEquals(String.format(TicketException.UNSUPPORTED_TICKET_TYPE, unsupportedTicket.getClass()), e.getMessage());
+        } catch (UnsupportTicketTypeException e) {
         }
         try {
             ticketRegistry.get("any_id", unsupportedTicket.getClass());
             fail("an TicketException should be throw");
-        } catch (TicketException e) {
-            assertEquals(String.format(TicketException.UNSUPPORTED_TICKET_TYPE, unsupportedTicket.getClass()), e.getMessage());
+        } catch (UnsupportTicketTypeException e) {
         }
         try {
             ticketRegistry.getAll(unsupportedTicket.getClass());
             fail("an TicketException should be throw");
-        } catch (TicketException e) {
-            assertEquals(String.format(TicketException.UNSUPPORTED_TICKET_TYPE, unsupportedTicket.getClass()), e.getMessage());
+        } catch (UnsupportTicketTypeException e) {
         }
 
     }
@@ -164,8 +163,7 @@ public abstract class AbstractTicketRegistryTest {
         try {
             ticketRegistry.add(tgt2);
             fail("an TicketException should be throw");
-        } catch (TicketException e) {
-            assertEquals(String.format(TicketException.DUPLICATED_ID, tgt2.getId()), e.getMessage());
+        } catch (DuplicateIdException e) {
         }
     }
 

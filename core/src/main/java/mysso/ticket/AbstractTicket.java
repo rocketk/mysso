@@ -47,7 +47,7 @@ public abstract class AbstractTicket implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("{}(id: {}, creationTime: {}, credentialId: {})",
+        return String.format("%s(id: %s, creationTime: %d, credentialId: %s)",
                 getClass().getSimpleName(), id, creationTime, credentialId);
     }
 }

@@ -32,6 +32,20 @@ public interface CentralTicketManager extends Serializable {
     Token grantToken(ServiceTicket st);
 
     /**
+     * validate the service ticket
+     * @param st
+     * @return true if the service ticket is valid.
+     */
+    boolean validateServiceTicket(ServiceTicket st);
+
+    /**
+     * validate the token
+     * @param tk
+     * @return true if the token is valid
+     */
+    boolean validateToken(Token tk);
+
+    /**
      * get the TicketGrantingTicket by id
      * @param id
      * @return

@@ -1,11 +1,11 @@
-package mysso.ticket;
+package mysso.ticket.exception;
 
 /**
  * Created by pengyu on 2017/8/13.
  */
 public class TicketException extends RuntimeException {
-    public static final String UNSUPPORTED_TICKET_TYPE = "the ticket type is unsupported: {}";
-    public static final String DUPLICATED_ID = "the id of the ticket to be added has already exists: {}";
+//    public static final String UNSUPPORTED_TICKET_TYPE = "the ticket type is unsupported: {}";
+//    public static final String DUPLICATED_ID = "the id of the ticket to be added has already exists: {}";
 
     public TicketException() {
     }
