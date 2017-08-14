@@ -8,6 +8,15 @@ import java.util.UUID;
 public class UUIDGenerator implements UniqueIdGenerator {
     private String prefix;
     private String suffix;
+
+    public UUIDGenerator() {
+    }
+
+    public UUIDGenerator(String prefix, String suffix) {
+        this.prefix = prefix;
+        this.suffix = suffix;
+    }
+
     @Override
     public String getNewId() {
         StringBuilder newId = new StringBuilder();
@@ -18,7 +27,7 @@ public class UUIDGenerator implements UniqueIdGenerator {
         if (suffix != null) {
             newId.append(suffix);
         }
-        return null;
+        return newId.toString();
     }
 
     public void setPrefix(String prefix) {

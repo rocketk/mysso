@@ -1,7 +1,7 @@
 package mysso.authentication;
 
 import mysso.authentication.exception.AuthenticationException;
-import mysso.ticket.CentralTicketManager;
+import mysso.ticket.TicketManager;
 import mysso.authentication.handler.AuthenticationHandler;
 import mysso.authentication.principal.Credential;
 import mysso.authentication.principal.Principal;
@@ -28,7 +28,7 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
     private PrincipalResolver principalResolver;
 
     @NotNull
-    private CentralTicketManager centralTicketManager;
+    private TicketManager ticketManager;
 
     @Override
     public Authentication authenticate(Credential credential) {
@@ -36,7 +36,7 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
             if (authenticationHandler.authenticate(credential)) {
                 log.info("{} successfully authenticated", credential.getId());
                 Principal principal = principalResolver.resolve(credential);
-                TicketGrantingTicket ticketGrantingTicket = centralTicketManager.createTicketGrantingTicket(credential);
+                TicketGrantingTicket ticketGrantingTicket = ticketManager.createTicketGrantingTicket(credential);
                 log.info("TicketGrantingTicket created: {}, for principal {}", ticketGrantingTicket.getId(), principal.getId());
                 return new Authentication(
                         principal,
@@ -72,7 +72,7 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
         this.principalResolver = principalResolver;
     }
 
-    public void setCentralTicketManager(CentralTicketManager centralTicketManager) {
-        this.centralTicketManager = centralTicketManager;
+    public void setTicketManager(TicketManager ticketManager) {
+        this.ticketManager = ticketManager;
     }
 }

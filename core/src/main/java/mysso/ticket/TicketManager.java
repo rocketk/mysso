@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * Created by pengyu on 2017/8/5.
  */
-public interface CentralTicketManager extends Serializable {
+public interface TicketManager extends Serializable {
     /**
      * create a TicketGrantingTicket and put it into the registry using the given credential.
      * @param credential

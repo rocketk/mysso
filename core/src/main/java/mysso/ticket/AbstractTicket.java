@@ -9,6 +9,7 @@ public abstract class AbstractTicket implements Serializable {
     protected String id;
     protected long creationTime;
     protected String credentialId;
+    protected boolean expired = false;
 
     public AbstractTicket() {
     }
@@ -20,6 +21,10 @@ public abstract class AbstractTicket implements Serializable {
     }
 
     public abstract boolean isExpired();
+
+    public void markExpired(){
+        this.expired = true;
+    }
 
     public String getCredentialId() {
         return credentialId;

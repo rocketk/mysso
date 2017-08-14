@@ -4,38 +4,44 @@ import mysso.authentication.principal.Credential;
 import mysso.serviceprovider.ServiceProvider;
 import mysso.ticket.registry.TicketRegistry;
 import mysso.util.UniqueIdGenerator;
+import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 
 /**
  * Created by pengyu on 2017/8/14.
  */
-public class CentralTicketManagerImpl implements CentralTicketManager {
+public class TicketManagerImpl implements TicketManager {
     @NotNull
     private TicketRegistry ticketRegistry;
     @NotNull
     private UniqueIdGenerator uniqueIdGenerator;
 
-    public CentralTicketManagerImpl() {
+    public TicketManagerImpl() {
     }
 
-    public CentralTicketManagerImpl(TicketRegistry ticketRegistry) {
+    public TicketManagerImpl(TicketRegistry ticketRegistry) {
         this.ticketRegistry = ticketRegistry;
     }
 
-    public CentralTicketManagerImpl(TicketRegistry ticketRegistry, UniqueIdGenerator uniqueIdGenerator) {
+    public TicketManagerImpl(TicketRegistry ticketRegistry, UniqueIdGenerator uniqueIdGenerator) {
         this.ticketRegistry = ticketRegistry;
         this.uniqueIdGenerator = uniqueIdGenerator;
     }
 
     @Override
     public TicketGrantingTicket createTicketGrantingTicket(Credential credential) {
-        TicketGrantingTicket ticketGrantingTicket = new TicketGrantingTicket();
-        return null;
+        TicketGrantingTicket ticketGrantingTicket = new TicketGrantingTicket(
+                uniqueIdGenerator.getNewId(), System.currentTimeMillis(), credential.getId());
+        ticketRegistry.add(ticketGrantingTicket);
+        return ticketGrantingTicket;
     }
 
     @Override
     public ServiceTicket grantServiceTicket(TicketGrantingTicket tgt, ServiceProvider sp) {
+        Assert.notNull(tgt);
+        Assert.notNull(sp);
+        //
         return null;
     }
 
