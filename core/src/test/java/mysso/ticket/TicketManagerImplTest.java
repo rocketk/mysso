@@ -96,7 +96,9 @@ public class TicketManagerImplTest {
     protected TicketManager getNewCentralTicketManager() {
         TicketRegistry ticketRegistry = new InMemoryTicketRegistry();
         UniqueIdGenerator tgtIdGenerator = new UUIDGenerator("tgt-", "");
-        TicketManager ticketManager = new TicketManagerImpl(ticketRegistry, tgtIdGenerator);
+        UniqueIdGenerator stIdGenerator = new UUIDGenerator("st-", "");
+        UniqueIdGenerator tkIdGenerator = new UUIDGenerator("tk-", "");
+        TicketManager ticketManager = new TicketManagerImpl(ticketRegistry, tgtIdGenerator, stIdGenerator, tkIdGenerator);
         return ticketManager;
     }
 
