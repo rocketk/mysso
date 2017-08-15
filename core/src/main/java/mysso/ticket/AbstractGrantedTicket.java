@@ -27,7 +27,7 @@ public abstract class AbstractGrantedTicket extends AbstractTicket {
 
     @Override
     public boolean isExpired() {
-        return System.currentTimeMillis() >= expiredTime;
+        return expired || System.currentTimeMillis() >= expiredTime;
     }
 
     public String getTicketGrantingTicketId() {

@@ -8,6 +8,8 @@ import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by pengyu on 2017/8/14.
@@ -24,7 +26,13 @@ public class TicketManagerImpl implements TicketManager {
     /**
      * living time for service ticket in millisecond.
      */
-    private long livingTime = 20000;
+    private long livingTimeForServiceTicket = 20000;
+
+    /**
+     * living time for token in millisecond.
+     * 5 minutes by default (5*60*1000=300000)
+     */
+    private long livingTimeForToken = 300000;
 
     public TicketManagerImpl() {
     }
@@ -50,24 +58,32 @@ public class TicketManagerImpl implements TicketManager {
     }
 
     @Override
-    public ServiceTicket grantServiceTicket(TicketGrantingTicket tgt, ServiceProvider sp) {
+    public ServiceTicket grantServiceTicket(TicketGrantingTicket tgt, String spId) {
         Assert.notNull(tgt);
-        Assert.notNull(sp);
+        Assert.notNull(spId);
         long now = System.currentTimeMillis();
         ServiceTicket st = new ServiceTicket(serviceTicketIdGenerator.getNewId(), now, tgt.getCredentialId(),
-                tgt.getId(), sp.getId(), now + livingTime);
+                tgt.getId(), spId, now + livingTimeForServiceTicket);
         if (tgt.getServiceTicketIds() == null) {
-            tgt.setServiceTicketIds(new ArrayList<String>());
+            tgt.setServiceTicketIds(new HashSet<String>());
         }
         tgt.getServiceTicketIds().add(st.getId());
-        // todo save the tgt to registry
+        ticketRegistry.update(tgt);
         ticketRegistry.add(st);
         return st;
     }
 
     @Override
     public Token grantToken(ServiceTicket st) {
-        return null;
+        long now = System.currentTimeMillis();
+        Token tk = new Token(tokenIdGenerator.getNewId(), now, st.getCredentialId(),
+                st.getTicketGrantingTicketId(), st.getServiceProviderId(), now + livingTimeForToken);
+        TicketGrantingTicket tgt = ticketRegistry.get(st.getTicketGrantingTicketId(), TicketGrantingTicket.class);
+        tgt.getTokenIds().add(tk.getId());
+        st.markExpired();
+        ticketRegistry.delete(st.getId(), ServiceTicket.class);
+        ticketRegistry.add(tk);
+        return tk;
     }
 
     @Override
@@ -108,11 +124,19 @@ public class TicketManagerImpl implements TicketManager {
         this.ticketGrantingTicketIdGenerator = ticketGrantingTicketIdGenerator;
     }
 
-    public long getLivingTime() {
-        return livingTime;
+    public long getLivingTimeForServiceTicket() {
+        return livingTimeForServiceTicket;
     }
 
-    public void setLivingTime(long livingTime) {
-        this.livingTime = livingTime;
+    public void setLivingTimeForServiceTicket(long livingTimeForServiceTicket) {
+        this.livingTimeForServiceTicket = livingTimeForServiceTicket;
+    }
+
+    public long getLivingTimeForToken() {
+        return livingTimeForToken;
+    }
+
+    public void setLivingTimeForToken(long livingTimeForToken) {
+        this.livingTimeForToken = livingTimeForToken;
     }
 }

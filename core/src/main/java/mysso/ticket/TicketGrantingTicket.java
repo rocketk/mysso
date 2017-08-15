@@ -3,14 +3,15 @@ package mysso.ticket;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by pengyu on 2017/8/5.
  */
 public class TicketGrantingTicket extends AbstractTicket{
-    private List<String> serviceTicketIds;
-    private List<String> tokenIds;
+    private Set<String> serviceTicketIds = new HashSet<>();
+    private Set<String> tokenIds = new HashSet<>();
 
     public TicketGrantingTicket() {
     }
@@ -19,25 +20,26 @@ public class TicketGrantingTicket extends AbstractTicket{
         super(id, creationTime, credentialId);
     }
 
-    public List<String> getServiceTicketIds() {
+
+    public Set<String> getServiceTicketIds() {
         return serviceTicketIds;
     }
 
-    public void setServiceTicketIds(List<String> serviceTicketIds) {
+    public void setServiceTicketIds(Set<String> serviceTicketIds) {
         this.serviceTicketIds = serviceTicketIds;
     }
 
-    public List<String> getTokenIds() {
+    public Set<String> getTokenIds() {
         return tokenIds;
     }
 
-    public void setTokenIds(List<String> tokenIds) {
+    public void setTokenIds(Set<String> tokenIds) {
         this.tokenIds = tokenIds;
     }
 
     @Override
     public boolean isExpired() {
-        return false;
+        return expired;
     }
 
     @Override

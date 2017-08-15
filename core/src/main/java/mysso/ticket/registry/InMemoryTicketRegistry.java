@@ -3,6 +3,7 @@ package mysso.ticket.registry;
 import mysso.ticket.*;
 import mysso.ticket.exception.DuplicateIdException;
 import mysso.ticket.exception.TicketException;
+import mysso.ticket.exception.TicketIdNotExistsException;
 import mysso.ticket.exception.UnsupportTicketTypeException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
@@ -32,7 +33,27 @@ public class InMemoryTicketRegistry implements TicketRegistry {
             throw new UnsupportTicketTypeException(String.format("the ticket type is unsupported: %s", ticket.getClass()));
         }
         if (ticketMap.containsKey(ticket.getId())) {
-            throw new DuplicateIdException(String.format("the id of the ticket to be added has already exists: %s", ticket.getId()));
+            throw new DuplicateIdException(String.format("the id of the ticket to be added has already exists: %s, ticket type: %s", ticket.getId(), ticket.getClass().getSimpleName()));
+        }
+        ticketMap.put(ticket.getId(), ticket);
+    }
+
+    @Override
+    public void update(AbstractTicket ticket) {
+        Assert.notNull(ticket, "ticket should not be null");
+        Map ticketMap;
+        if (ticket instanceof TicketGrantingTicket) {
+            ticketMap = tgtMap;
+        } else if (ticket instanceof ServiceTicket) {
+            ticketMap = stMap;
+        } else if (ticket instanceof Token) {
+            ticketMap = tkMap;
+        } else {
+            throw new UnsupportTicketTypeException(String.format("the ticket type is unsupported: %s", ticket.getClass()));
+        }
+        if (!ticketMap.containsKey(ticket.getId())) {
+            throw new TicketIdNotExistsException(String.format("the id of the ticket to be updated does not exist, " +
+                    "it might be deleted from the registry: %s, ticket type: %s", ticket.getId(), ticket.getClass().getSimpleName()));
         }
         ticketMap.put(ticket.getId(), ticket);
     }

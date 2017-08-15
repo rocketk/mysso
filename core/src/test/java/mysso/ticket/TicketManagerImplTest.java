@@ -43,24 +43,24 @@ public class TicketManagerImplTest {
             ServiceProvider sp = mock(ServiceProvider.class);
             when(sp.getId()).thenReturn("spid-example");
             // verify granting service ticket
-            ServiceTicket st = manager.grantServiceTicket(tgt, sp);
+            ServiceTicket st = manager.grantServiceTicket(tgt, sp.getId());
             assertNotNull(st);
             assertNotNull(st.getId());
             assertEquals(tgt.getId(), st.getTicketGrantingTicketId());
             assertNotNull(tgt.getServiceTicketIds());
             assertEquals(1, tgt.getServiceTicketIds().size());
-            assertEquals(st.getId(), tgt.getServiceTicketIds().get(0));
+            assertTrue("tgt.serviceTicketIds should contains st.id", tgt.getServiceTicketIds().contains(st.getId()));
             assertEquals(st, manager.getServiceTicket(st.getId()));
 
             // verify granting token
             Token tk = manager.grantToken(st);
             assertNotNull(tk);
             assertNotNull(tk.getId());
-            assertEquals(tk, manager.getToken(st.getId()));
-            assertTrue(st.isExpired());
+            assertEquals(tk, manager.getToken(tk.getId()));
+            assertTrue("st.isExpired() should be true", st.isExpired());
             assertNull(manager.getServiceTicket(st.getId()));
             assertEquals(tgt.getId(), tk.getTicketGrantingTicketId());
-            assertEquals(tk, tgt.getTokenIds().get(0));
+            assertTrue("tk.id should be contained in tgt.tokenIds", tgt.getTokenIds().contains(tk.getId()));
 
             manager.destroyTicketGrantingTicket(tgt.getId());
             assertNull(manager.getTicketGrantingTicket(tgt.getId()));

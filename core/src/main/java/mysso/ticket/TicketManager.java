@@ -19,10 +19,10 @@ public interface TicketManager extends Serializable {
     /**
      * grant a ServiceTicket.
      * @param tgt not null, existing, valid
-     * @param sp not null, existing
+     * @param spId not null, existing
      * @return
      */
-    ServiceTicket grantServiceTicket(TicketGrantingTicket tgt, ServiceProvider sp);
+    ServiceTicket grantServiceTicket(TicketGrantingTicket tgt, String spId);
 
     /**
      * grant a Token.

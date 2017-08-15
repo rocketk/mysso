@@ -7,7 +7,9 @@ import mysso.ticket.exception.UnsupportTicketTypeException;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -30,6 +32,20 @@ public abstract class AbstractTicketRegistryTest {
             assertNotNull(ticketRegistry.get(ticket2.getId(), ticket1.getClass()));
             assertEquals(ticket2, ticketRegistry.get(ticket2.getId(), ticket1.getClass()));
             assertEquals(2, ticketRegistry.getAll(ticket1.getClass()).size());
+            // verify update ticket
+            if (ticket1 instanceof TicketGrantingTicket) {
+                Set<String> serviceTicketIds1 = new HashSet<>();
+                serviceTicketIds1.add("st-001");
+                serviceTicketIds1.add("st-002");
+                ((TicketGrantingTicket) ticket1).setServiceTicketIds(serviceTicketIds1);
+                assertEquals(ticket1, ticketRegistry.get(ticket1.getId(), TicketGrantingTicket.class));
+                assertEquals(((TicketGrantingTicket) ticket1).getServiceTicketIds(),
+                        ticketRegistry.get(ticket1.getId(), TicketGrantingTicket.class).getServiceTicketIds());
+            } else if(ticket1 instanceof Token) {
+                ((Token) ticket1).setExpiredTime(System.currentTimeMillis() + 20000);
+                ticketRegistry.update(ticket1);
+                assertEquals(ticket1, ticketRegistry.get(ticket1.getId(), Token.class));
+            }
             // verify delete ticket
             assertTrue(ticketRegistry.delete(ticket1.getId(), ticket1.getClass()));
             assertNull(ticketRegistry.get(ticket1.getId(), ticket1.getClass()));
@@ -49,15 +65,7 @@ public abstract class AbstractTicketRegistryTest {
     @Test
     public void verifyTicketGrantingTicketCRUD() {
         TicketGrantingTicket tgt1 = new TicketGrantingTicket("tgt-001", System.currentTimeMillis(), "credentialId");
-        List<String> serviceTicketIds1 = new ArrayList<>();
-        serviceTicketIds1.add("st-001");
-        serviceTicketIds1.add("st-002");
-        tgt1.setServiceTicketIds(serviceTicketIds1);
         TicketGrantingTicket tgt2 = new TicketGrantingTicket("tgt-002", System.currentTimeMillis(), "principal2");
-        List<String> serviceTicketIds2 = new ArrayList<>();
-        serviceTicketIds1.add("st-011");
-        serviceTicketIds1.add("st-012");
-        tgt2.setServiceTicketIds(serviceTicketIds2);
         verifyCRUD(tgt1, tgt2);
     }
 
@@ -89,7 +97,7 @@ public abstract class AbstractTicketRegistryTest {
         ServiceTicket st1 = new ServiceTicket("st-001", now, "credentialId", "tgt-001", "sp-001", now + 10000);
         now = System.currentTimeMillis();
         ServiceTicket st2 = new ServiceTicket("st-002", now, "credentialId", "tgt-001", "sp-001", now + 10000);
-        List<String> serviceTicketIds1 = new ArrayList<>();
+        Set<String> serviceTicketIds1 = new HashSet<>();
         serviceTicketIds1.add(st1.getId());
         serviceTicketIds1.add(st2.getId());
         tgt.setServiceTicketIds(serviceTicketIds1);
@@ -98,7 +106,7 @@ public abstract class AbstractTicketRegistryTest {
         Token tk1 = new Token("tk-001", now, "credentialId", "tgt-001", "sp-001", now + 10000);
         now = System.currentTimeMillis();
         Token tk2 = new Token("tk-002", now, "credentialId", "tgt-001", "sp-001", now + 10000);
-        List<String> tokenIds = new ArrayList<>();
+        Set<String> tokenIds = new HashSet<>();
         tokenIds.add(tk1.getId());
         tokenIds.add(tk2.getId());
         tgt.setTokenIds(tokenIds);

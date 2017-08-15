@@ -15,6 +15,8 @@ public interface TicketRegistry {
      */
     void add(AbstractTicket ticket);
 
+    void update(AbstractTicket ticket);
+
     /**
      * delete the ticket by the given id from the registry
      * @param id
