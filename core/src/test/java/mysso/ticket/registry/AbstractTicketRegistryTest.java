@@ -22,7 +22,7 @@ public abstract class AbstractTicketRegistryTest {
         try {
             TicketRegistry ticketRegistry = getNewTicketRegistry();
             assertNotNull(ticketRegistry);
-            // verify add ticket
+            // 验证添加ticket
             ticketRegistry.add(ticket1);
             assertNotNull(ticketRegistry.get(ticket1.getId(), ticket1.getClass()));
             assertEquals(ticket1, ticketRegistry.get(ticket1.getId(), ticket1.getClass()));
@@ -32,8 +32,9 @@ public abstract class AbstractTicketRegistryTest {
             assertNotNull(ticketRegistry.get(ticket2.getId(), ticket1.getClass()));
             assertEquals(ticket2, ticketRegistry.get(ticket2.getId(), ticket1.getClass()));
             assertEquals(2, ticketRegistry.getAll(ticket1.getClass()).size());
-            // verify update ticket
+            // 验证更新ticket
             if (ticket1 instanceof TicketGrantingTicket) {
+                // 验证tgt的集合属性更新
                 Set<String> serviceTicketIds1 = new HashSet<>();
                 serviceTicketIds1.add("st-001");
                 serviceTicketIds1.add("st-002");
@@ -42,11 +43,12 @@ public abstract class AbstractTicketRegistryTest {
                 assertEquals(((TicketGrantingTicket) ticket1).getServiceTicketIds(),
                         ticketRegistry.get(ticket1.getId(), TicketGrantingTicket.class).getServiceTicketIds());
             } else if(ticket1 instanceof Token) {
+                // 验证token的有效期更新
                 ((Token) ticket1).setExpiredTime(System.currentTimeMillis() + 20000);
                 ticketRegistry.update(ticket1);
                 assertEquals(ticket1, ticketRegistry.get(ticket1.getId(), Token.class));
             }
-            // verify delete ticket
+            // 验证删除ticket
             assertTrue(ticketRegistry.delete(ticket1.getId(), ticket1.getClass()));
             assertNull(ticketRegistry.get(ticket1.getId(), ticket1.getClass()));
             assertNotNull(ticketRegistry.get(ticket2.getId(), ticket1.getClass()));
@@ -54,7 +56,7 @@ public abstract class AbstractTicketRegistryTest {
             assertTrue(ticketRegistry.delete(ticket2.getId(), ticket1.getClass()));
             assertNull(ticketRegistry.get(ticket2.getId(), ticket1.getClass()));
             assertEquals(0, ticketRegistry.getAll(ticket1.getClass()).size());
-            // verify delete ticket that does not exist
+            // 验证registry中确实已经删除了ticket
             assertFalse(ticketRegistry.delete(ticket1.getId(), ticket1.getClass()));
             assertFalse(ticketRegistry.delete(ticket2.getId(), ticket1.getClass()));
         } catch (Exception e) {
@@ -126,6 +128,10 @@ public abstract class AbstractTicketRegistryTest {
         assertEquals(0, ticketRegistry.getAll(TicketGrantingTicket.class).size());
         assertEquals(0, ticketRegistry.getAll(ServiceTicket.class).size());
         assertEquals(0, ticketRegistry.getAll(Token.class).size());
+    }
+
+    public void verifyUpdateTicketGrantingTicketAfterDeletedAbstractTicket() {
+        // todo
     }
 
     @Test

@@ -68,10 +68,14 @@ public class InMemoryTicketRegistry implements TicketRegistry {
                 return true;
             }
         } else if (StringUtils.equals(ServiceTicket.class.getCanonicalName(), clazz.getCanonicalName())) {
+            ServiceTicket st = get(id, ServiceTicket.class);
+            deleteIdFromTGT(st);
             if (stMap.remove(id) != null) {
                 return true;
             }
         } else if (StringUtils.equals(Token.class.getCanonicalName(), clazz.getCanonicalName())) {
+            Token tk = get(id, Token.class);
+            deleteIdFromTGT(tk);
             if (tkMap.remove(id) != null) {
                 return true;
             }
@@ -93,6 +97,28 @@ public class InMemoryTicketRegistry implements TicketRegistry {
         if (tgt.getTokenIds() != null) {
             for (String tkId : tgt.getTokenIds()) {
                 tkMap.remove(tkId);
+            }
+        }
+    }
+
+    private void deleteIdFromTGT(AbstractGrantedTicket ticket) {
+        if (ticket instanceof ServiceTicket) {
+            ServiceTicket st = (ServiceTicket) ticket;
+            if (st != null) {
+                TicketGrantingTicket tgt = get(st.getTicketGrantingTicketId(), TicketGrantingTicket.class);
+                if (tgt != null) {
+                    tgt.getServiceTicketIds().remove(st.getId());
+                    tgtMap.put(tgt.getId(), tgt);
+                }
+            }
+        } else if (ticket instanceof Token) {
+            Token tk = (Token) ticket;
+            if (tk != null) {
+                TicketGrantingTicket tgt = get(tk.getTicketGrantingTicketId(), TicketGrantingTicket.class);
+                if (tgt != null) {
+                    tgt.getTokenIds().remove(tk.getId());
+                    tgtMap.put(tgt.getId(), tgt);
+                }
             }
         }
     }
