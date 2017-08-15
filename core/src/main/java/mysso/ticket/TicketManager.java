@@ -32,18 +32,20 @@ public interface TicketManager extends Serializable {
     Token grantToken(ServiceTicket st);
 
     /**
-     * validate the service ticket
-     * @param st
-     * @return true if the service ticket is valid.
+     * 校验一个ServiceTicketID是否正确, 并且是否由给定的ServiceProvider所签发
+     * @param stId
+     * @param spId
+     * @return
      */
-    boolean validateServiceTicket(ServiceTicket st);
+    boolean validateServiceTicket(String stId, String spId);
 
     /**
-     * validate the token
-     * @param tk
-     * @return true if the token is valid
+     * 校验一个TokenID是否正确, 并且是否由给定的ServiceProvider所签发
+     * @param tkId
+     * @param spId
+     * @return
      */
-    boolean validateToken(Token tk);
+    boolean validateToken(String tkId, String spId);
 
     /**
      * get the TicketGrantingTicket by id

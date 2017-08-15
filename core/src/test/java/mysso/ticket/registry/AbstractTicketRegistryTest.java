@@ -29,8 +29,8 @@ public abstract class AbstractTicketRegistryTest {
             assertNotNull(ticketRegistry.getAll(ticket1.getClass()));
             assertEquals(1, ticketRegistry.getAll(ticket1.getClass()).size());
             ticketRegistry.add(ticket2);
-            assertNotNull(ticketRegistry.get(ticket2.getId(), ticket1.getClass()));
-            assertEquals(ticket2, ticketRegistry.get(ticket2.getId(), ticket1.getClass()));
+            assertNotNull(ticketRegistry.get(ticket2.getId(), ticket2.getClass()));
+            assertEquals(ticket2, ticketRegistry.get(ticket2.getId(), ticket2.getClass()));
             assertEquals(2, ticketRegistry.getAll(ticket1.getClass()).size());
             // 验证更新ticket
             if (ticket1 instanceof TicketGrantingTicket) {

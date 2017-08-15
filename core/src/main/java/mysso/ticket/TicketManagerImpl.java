@@ -61,6 +61,7 @@ public class TicketManagerImpl implements TicketManager {
     public ServiceTicket grantServiceTicket(TicketGrantingTicket tgt, String spId) {
         Assert.notNull(tgt);
         Assert.notNull(spId);
+        Assert.isTrue(!tgt.isExpired(), "tgt 已过期");
         long now = System.currentTimeMillis();
         ServiceTicket st = new ServiceTicket(serviceTicketIdGenerator.getNewId(), now, tgt.getCredentialId(),
                 tgt.getId(), spId, now + livingTimeForServiceTicket);
@@ -75,6 +76,7 @@ public class TicketManagerImpl implements TicketManager {
 
     @Override
     public Token grantToken(ServiceTicket st) {
+        Assert.notNull(st);
         long now = System.currentTimeMillis();
         Token tk = new Token(tokenIdGenerator.getNewId(), now, st.getCredentialId(),
                 st.getTicketGrantingTicketId(), st.getServiceProviderId(), now + livingTimeForToken);
@@ -83,16 +85,31 @@ public class TicketManagerImpl implements TicketManager {
         st.markExpired();
         ticketRegistry.delete(st.getId(), ServiceTicket.class);
         ticketRegistry.add(tk);
+        ticketRegistry.update(tgt);
         return tk;
     }
 
     @Override
-    public boolean validateServiceTicket(ServiceTicket st) {
+    public boolean validateServiceTicket(String stId, String spId) {
+        Assert.notNull(stId);
+        Assert.notNull(spId);
+        ServiceTicket st = ticketRegistry.get(stId, ServiceTicket.class);
+        // st存在, 并且未过期, 并且确实由指定的ServiceProvider所签发, 则校验成功
+        if (st != null && !st.isExpired() && spId.equals(st.getServiceProviderId())) {
+            return true;
+        }
         return false;
     }
 
     @Override
-    public boolean validateToken(Token tk) {
+    public boolean validateToken(String tkId, String spId) {
+        Assert.notNull(tkId);
+        Assert.notNull(spId);
+        Token tk = ticketRegistry.get(tkId, Token.class);
+        // tk存在, 并且未过期, 并且确实由指定的ServiceProvider所签发, 则校验成功
+        if (tk != null && !tk.isExpired() && spId.equals(tk.getServiceProviderId())) {
+            return true;
+        }
         return false;
     }
 
