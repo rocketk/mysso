@@ -30,7 +30,7 @@ public class AcceptUsersAuthenticationHandler implements AuthenticationHandler {
     @Override
     public HandlerResult authenticate(Credential credential) {
         Assert.notNull(credential);
-        if (!(credential instanceof UsernamePasswordCredential)) {
+        if (!supports(credential)) {
             throw new CredentialNotSupportedException(String.format("the credential %s is not supported by the handler %s",
                     credential.getClass().getSimpleName(), this.getClass().getSimpleName())
             );

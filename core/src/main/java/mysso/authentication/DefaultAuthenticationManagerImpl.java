@@ -12,6 +12,7 @@ import mysso.ticket.TicketGrantingTicket;
 import mysso.ticket.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -33,6 +34,7 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
 
     @Override
     public Authentication authenticate(Credential credential) {
+        Assert.notNull(credential, "credential is null");
         try {
             HandlerResult result = authenticationHandler.authenticate(credential);
             if (result.isSuccess()) {
@@ -52,8 +54,8 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
                         false, String.format("%s failed authenticating, caused by: %s", credential.getId(), result.getMessage()));
             }
         } catch (AuthenticationException e) {
-            return new Authentication(null, new Date(), null, null,
-                    false, String.format("%s failed authenticating, caused by: %s", credential.getId(), e.getMessage()));
+            log.error(e.getMessage(), e);
+            throw e;
         }
     }
 

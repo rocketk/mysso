@@ -1,4 +1,4 @@
-package mysso.authentication;
+package mysso.authentication.principal;
 
 import mysso.authentication.principal.AttributeRepository;
 import org.apache.commons.lang3.Validate;
@@ -19,7 +19,7 @@ public class SimpleUserAttributeRepository implements AttributeRepository {
 
     @Override
     public Map<String, String> getAttributeById(String id) {
-        Validate.notNull(userAttributeMaps, "userAttributeMaps cannot be null");
+        Validate.notNull(userAttributeMaps, "userAttributeMaps is null");
         return userAttributeMaps.get(id);
     }
 }
