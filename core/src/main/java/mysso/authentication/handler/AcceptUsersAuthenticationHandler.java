@@ -1,6 +1,9 @@
 package mysso.authentication.handler;
 
+import mysso.authentication.Authentication;
 import mysso.authentication.UsernamePasswordCredential;
+import mysso.authentication.exception.AuthenticationException;
+import mysso.authentication.exception.CredentialNotSupportedException;
 import mysso.authentication.principal.Credential;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
@@ -20,6 +23,7 @@ public class AcceptUsersAuthenticationHandler implements AuthenticationHandler {
 
     @Override
     public boolean supports(Credential credential) {
+        Assert.notNull(credential);
         return credential instanceof UsernamePasswordCredential;
     }
 
@@ -27,8 +31,7 @@ public class AcceptUsersAuthenticationHandler implements AuthenticationHandler {
     public HandlerResult authenticate(Credential credential) {
         Assert.notNull(credential);
         if (!(credential instanceof UsernamePasswordCredential)) {
-            return new HandlerResult(false,
-                    String.format("the credential %s is not supported by the handler %s",
+            throw new CredentialNotSupportedException(String.format("the credential %s is not supported by the handler %s",
                     credential.getClass().getSimpleName(), this.getClass().getSimpleName())
             );
         }

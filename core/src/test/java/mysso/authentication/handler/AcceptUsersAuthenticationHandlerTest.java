@@ -1,8 +1,13 @@
 package mysso.authentication.handler;
 
+import mysso.authentication.Authentication;
 import mysso.authentication.UsernamePasswordCredential;
+import mysso.authentication.exception.AuthenticationException;
+import mysso.authentication.exception.CredentialNotSupportedException;
 import mysso.authentication.principal.Credential;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -22,15 +27,15 @@ public class AcceptUsersAuthenticationHandlerTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {new UsernamePasswordCredential("jack", "123123"), true, true}, // valid credential
-                {new UsernamePasswordCredential("jack", "123321"), true, false}, // wrong password
-                {new UsernamePasswordCredential("peter", "123321"), true, false}, // user doesn't exist
+                {new UsernamePasswordCredential("jack", "123123"), true, true, null}, // valid credential
+                {new UsernamePasswordCredential("jack", "123321"), true, false, null}, // wrong password
+                {new UsernamePasswordCredential("peter", "123321"), true, false, null}, // user doesn't exist
                 {new Credential() { // unsupported type
                     @Override
                     public String getId() {
                         return "jack";
                     }
-                }, false, false}
+                }, false, false, CredentialNotSupportedException.class}
         });
     }
 
@@ -43,6 +48,12 @@ public class AcceptUsersAuthenticationHandlerTest {
     @Parameterized.Parameter(2)
     public boolean success;
 
+    @Parameterized.Parameter(3)
+    public Class<? extends AuthenticationException> expectedException;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
     public void verifySupports() {
         AuthenticationHandler handler = getAuthenticationHandler();
@@ -52,6 +63,9 @@ public class AcceptUsersAuthenticationHandlerTest {
 
     @Test
     public void verifyAuthenticate() {
+        if (expectedException != null) {
+            thrown.expect(expectedException);
+        }
         AuthenticationHandler handler = getAuthenticationHandler();
         HandlerResult result = handler.authenticate(credential);
         assertEquals(success, result.isSuccess());
