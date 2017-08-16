@@ -8,5 +8,5 @@ import mysso.authentication.principal.Credential;
  */
 public interface AuthenticationHandler {
     boolean supports(Credential credential);
-    boolean authenticate(Credential credential) throws AuthenticationException;
+    HandlerResult authenticate(Credential credential) throws AuthenticationException;
 }

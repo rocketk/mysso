@@ -1,7 +1,9 @@
 package mysso.authentication.handler;
 
-import mysso.authentication.principal.Credential;
 import mysso.authentication.UsernamePasswordCredential;
+import mysso.authentication.principal.Credential;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 import java.util.Map;
@@ -15,15 +17,34 @@ public class AcceptUsersAuthenticationHandler implements AuthenticationHandler {
     private PasswordEncoder passwordEncoder;
     @NotNull
     private Map<String, String> users;
+
     @Override
     public boolean supports(Credential credential) {
         return credential instanceof UsernamePasswordCredential;
     }
 
     @Override
-    public boolean authenticate(Credential credential) {
-        // TODO
-        return true;
+    public HandlerResult authenticate(Credential credential) {
+        Assert.notNull(credential);
+        if (!(credential instanceof UsernamePasswordCredential)) {
+            return new HandlerResult(false,
+                    String.format("the credential %s is not supported by the handler %s",
+                    credential.getClass().getSimpleName(), this.getClass().getSimpleName())
+            );
+        }
+        if (!users.containsKey(credential.getId())) {
+            return new HandlerResult(false,
+                    String.format("the user id %s does not exist", credential.getId())
+            );
+        }
+
+        UsernamePasswordCredential usernamePasswordCredential = (UsernamePasswordCredential) credential;
+        String encodedPassword = passwordEncoder.encode(usernamePasswordCredential.getPassword());
+        String passwordFromRepository = users.get(credential.getId());
+        if (StringUtils.equals(encodedPassword, passwordFromRepository)) {
+            return new HandlerResult(true, String.format("user id %s is successfully authenticated", credential.getId()));
+        }
+        return new HandlerResult(false, String.format("invalid password, id %s", credential.getId()));
     }
 
     public void setUsers(Map<String, String> users) {

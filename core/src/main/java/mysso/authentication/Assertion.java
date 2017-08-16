@@ -10,15 +10,13 @@ import java.io.Serializable;
 public class Assertion implements Serializable {
     private int code;
     private Token token;
-    private long nextTimeToValide;
 
     public Assertion() {
     }
 
-    public Assertion(int code, Token token, long nextTimeToValide) {
+    public Assertion(int code, Token token) {
         this.code = code;
         this.token = token;
-        this.nextTimeToValide = nextTimeToValide;
     }
 
     public int getCode() {
@@ -37,11 +35,4 @@ public class Assertion implements Serializable {
         this.token = token;
     }
 
-    public long getNextTimeToValide() {
-        return nextTimeToValide;
-    }
-
-    public void setNextTimeToValide(long nextTimeToValide) {
-        this.nextTimeToValide = nextTimeToValide;
-    }
 }

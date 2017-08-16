@@ -1,6 +1,7 @@
 package mysso.authentication;
 
 import mysso.authentication.exception.AuthenticationException;
+import mysso.authentication.handler.HandlerResult;
 import mysso.ticket.TicketManager;
 import mysso.authentication.handler.AuthenticationHandler;
 import mysso.authentication.principal.Credential;
@@ -33,7 +34,8 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
     @Override
     public Authentication authenticate(Credential credential) {
         try {
-            if (authenticationHandler.authenticate(credential)) {
+            HandlerResult result = authenticationHandler.authenticate(credential);
+            if (result.isSuccess()) {
                 log.info("{} successfully authenticated", credential.getId());
                 Principal principal = principalResolver.resolve(credential);
                 TicketGrantingTicket ticketGrantingTicket = ticketManager.createTicketGrantingTicket(credential);
@@ -46,11 +48,12 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
                         true,
                         String.format("%s successfully authenticated", credential.getId()));
             } else {
-                throw new AuthenticationException();
+                return new Authentication(null, new Date(), null, null,
+                        false, String.format("%s failed authenticating, caused by: %s", credential.getId(), result.getMessage()));
             }
         } catch (AuthenticationException e) {
             return new Authentication(null, new Date(), null, null,
-                    true, String.format("%s failed authenticating, caused by: %s", credential.getId(), e.getMessage()));
+                    false, String.format("%s failed authenticating, caused by: %s", credential.getId(), e.getMessage()));
         }
     }
 

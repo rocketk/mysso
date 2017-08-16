@@ -10,6 +10,14 @@ public class UsernamePasswordCredential implements Credential {
     private String username;
     private String password;
 
+    public UsernamePasswordCredential() {
+    }
+
+    public UsernamePasswordCredential(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     @Override
     public String getId() {
         return username;
