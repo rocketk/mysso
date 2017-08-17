@@ -1,15 +1,13 @@
 package mysso.authentication;
 
+import mysso.authentication.credential.Credential;
 import mysso.authentication.exception.AuthenticationException;
-import mysso.authentication.handler.HandlerResult;
-import mysso.ticket.TicketManager;
 import mysso.authentication.handler.AuthenticationHandler;
-import mysso.authentication.principal.Credential;
+import mysso.authentication.handler.HandlerResult;
 import mysso.authentication.principal.Principal;
 import mysso.authentication.principal.PrincipalResolver;
-import mysso.ticket.ServiceTicket;
 import mysso.ticket.TicketGrantingTicket;
-import mysso.ticket.Token;
+import mysso.ticket.TicketManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;

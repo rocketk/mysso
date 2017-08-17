@@ -2,9 +2,9 @@ package mysso.authentication.handler;
 
 import mysso.authentication.Authentication;
 import mysso.authentication.UsernamePasswordCredential;
+import mysso.authentication.credential.Credential;
 import mysso.authentication.exception.AuthenticationException;
 import mysso.authentication.exception.CredentialNotSupportedException;
-import mysso.authentication.principal.Credential;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

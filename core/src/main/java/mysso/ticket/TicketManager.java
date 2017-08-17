@@ -1,7 +1,7 @@
 package mysso.ticket;
 
-import mysso.authentication.principal.Credential;
-import mysso.serviceprovider.ServiceProvider;
+
+import mysso.authentication.credential.Credential;
 
 import java.io.Serializable;
 

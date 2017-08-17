@@ -1,6 +1,6 @@
 package mysso.authentication;
 
-import mysso.authentication.principal.Credential;
+import mysso.authentication.credential.Credential;
 import mysso.ticket.ServiceTicket;
 import mysso.ticket.Token;
 

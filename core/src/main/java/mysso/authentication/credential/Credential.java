@@ -1,4 +1,4 @@
-package mysso.authentication.principal;
+package mysso.authentication.credential;
 
 import java.io.Serializable;
 

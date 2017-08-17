@@ -1,15 +1,13 @@
 package mysso.ticket;
 
-import mysso.authentication.principal.Credential;
-import mysso.serviceprovider.ServiceProvider;
+
+import mysso.authentication.credential.Credential;
 import mysso.ticket.registry.TicketRegistry;
 import mysso.util.UniqueIdGenerator;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by pengyu on 2017/8/14.
