@@ -1,7 +1,6 @@
 package mysso.authentication.handler;
 
-import mysso.authentication.Authentication;
-import mysso.authentication.UsernamePasswordCredential;
+import mysso.authentication.credential.UsernamePasswordCredential;
 import mysso.authentication.credential.Credential;
 import mysso.authentication.exception.AuthenticationException;
 import mysso.authentication.exception.CredentialNotSupportedException;

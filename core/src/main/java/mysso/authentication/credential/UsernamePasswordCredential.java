@@ -1,6 +1,5 @@
-package mysso.authentication;
+package mysso.authentication.credential;
 
-import mysso.authentication.credential.Credential;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
