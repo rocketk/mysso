@@ -37,7 +37,7 @@ public interface TicketManager extends Serializable {
      * @param spId
      * @return
      */
-    boolean validateServiceTicket(String stId, String spId);
+    TicketValidateResult validateServiceTicket(String stId, String spId);
 
     /**
      * 校验一个TokenID是否正确, 并且是否由给定的ServiceProvider所签发
@@ -45,7 +45,7 @@ public interface TicketManager extends Serializable {
      * @param spId
      * @return
      */
-    boolean validateToken(String tkId, String spId);
+    TicketValidateResult validateToken(String tkId, String spId);
 
     /**
      * get the TicketGrantingTicket by id

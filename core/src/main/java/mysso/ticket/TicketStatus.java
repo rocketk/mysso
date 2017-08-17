@@ -4,7 +4,9 @@ package mysso.ticket;
  * Created by pengyu on 2017/8/17.
  */
 public enum TicketStatus {
-    VALID(0, "valid ticket"), VALID_BUT_EXPIRED(1, "valid but expired (haven't been markExpired)"), INVALID(2, "invalid ticket");
+    VALID(0, "valid ticket"),
+    VALID_BUT_EXPIRED(1, "valid but expired"),
+    INVALID(2, "invalid ticket");
 
     private int index;
     private String desc;

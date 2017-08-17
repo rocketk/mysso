@@ -90,27 +90,36 @@ public class TicketManagerImpl implements TicketManager {
     }
 
     @Override
-    public boolean validateServiceTicket(String stId, String spId) {
+    public TicketValidateResult validateServiceTicket(String stId, String spId) {
         Assert.notNull(stId);
         Assert.notNull(spId);
         ServiceTicket st = ticketRegistry.get(stId, ServiceTicket.class);
         // st存在, 并且未过期, 并且确实由指定的ServiceProvider所签发, 则校验成功
         if (st != null && !st.isExpired() && spId.equals(st.getServiceProviderId())) {
-            return true;
+            return new TicketValidateResult(TicketStatus.VALID, TicketStatus.VALID.getDesc(), grantToken(st));
         }
-        return false;
+        return new TicketValidateResult(TicketStatus.INVALID, TicketStatus.INVALID.getDesc(), null);
     }
 
     @Override
-    public boolean validateToken(String tkId, String spId) {
+    public TicketValidateResult validateToken(String tkId, String spId) {
         Assert.notNull(tkId);
         Assert.notNull(spId);
         Token tk = ticketRegistry.get(tkId, Token.class);
         // tk存在, 并且未过期, 并且确实由指定的ServiceProvider所签发, 则校验成功
-        if (tk != null && !tk.isExpired() && spId.equals(tk.getServiceProviderId())) {
-            return true;
+        if (tk != null && spId.equals(tk.getServiceProviderId())) {
+            if (tk.isExpired()) {
+                long now = System.currentTimeMillis();
+                Token newToken = new Token(tokenIdGenerator.getNewId(), now, tk.getCredentialId(),
+                        tk.getTicketGrantingTicketId(), tk.getServiceProviderId(), now + livingTimeForToken);
+                ticketRegistry.delete(tk.getId(), Token.class);
+                ticketRegistry.add(newToken);
+                return new TicketValidateResult(TicketStatus.VALID_BUT_EXPIRED, TicketStatus.VALID_BUT_EXPIRED.getDesc(), newToken);
+            } else {
+                return new TicketValidateResult(TicketStatus.VALID, TicketStatus.VALID.getDesc(), tk);
+            }
         }
-        return false;
+        return new TicketValidateResult(TicketStatus.INVALID, TicketStatus.INVALID.getDesc(), tk);
     }
 
     @Override
