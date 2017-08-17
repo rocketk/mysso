@@ -15,6 +15,7 @@ public class ServiceProvider implements Serializable {
     protected String name;
     protected String description;
     protected String secretKey;
+    protected String homeUrl;
     protected List<String> logoutUrls;
     protected Map<String, String> neededAttributes;
     protected AccessServiceProviderPolicy accessServiceProviderPolicy = AccessServiceProviderPolicy.ALLOW_ALL;
@@ -29,6 +30,7 @@ public class ServiceProvider implements Serializable {
         this.secretKey = secretKey;
         this.logoutUrls = logoutUrls;
     }
+
 
     public ServiceProvider(String id, String name, String description, String secretKey, List<String> logoutUrls,
                            Map<String, String> neededAttributes,
@@ -96,6 +98,14 @@ public class ServiceProvider implements Serializable {
 
     public void setAccessServiceProviderPolicy(AccessServiceProviderPolicy accessServiceProviderPolicy) {
         this.accessServiceProviderPolicy = accessServiceProviderPolicy;
+    }
+
+    public String getHomeUrl() {
+        return homeUrl;
+    }
+
+    public void setHomeUrl(String homeUrl) {
+        this.homeUrl = homeUrl;
     }
 
     @Override
