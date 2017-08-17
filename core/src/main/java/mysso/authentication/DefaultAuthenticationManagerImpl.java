@@ -59,16 +59,6 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
         }
     }
 
-    @Override
-    public Assertion validateServiceTicket(ServiceTicket serviceTicket) {
-        return null;
-    }
-
-    @Override
-    public Assertion validateToken(Token token) {
-        return null;
-    }
-
     public void setAuthenticationHandler(AuthenticationHandler authenticationHandler) {
         this.authenticationHandler = authenticationHandler;
     }

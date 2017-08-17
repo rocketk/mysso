@@ -15,17 +15,9 @@ public interface AuthenticationManager {
      */
     Authentication authenticate(Credential credential);
 
-    /**
-     * 校验serviceTicket，校验结果放到Assertion中，如果校验通过，则会生成一个token放入Assertion中
-     * @param serviceTicket
-     * @return
-     */
-    Assertion validateServiceTicket(ServiceTicket serviceTicket);
-
-    /**
-     * 校验token，校验结果放到Assertion中，如果需要更换token，则会将新token一并放入Assertion中
-     * @param token
-     * @return Assertion
-     */
-    Assertion validateToken(Token token);
 }
+
+
+
+
+

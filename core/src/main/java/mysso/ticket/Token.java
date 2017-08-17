@@ -12,4 +12,5 @@ public class Token extends AbstractGrantedTicket {
                          String ticketGrantingTicketId, String serviceProviderId, long expiredTime) {
         super(id, creationTime, credentialId, ticketGrantingTicketId, serviceProviderId, expiredTime);
     }
+
 }
