@@ -39,6 +39,7 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
                 log.info("{} successfully authenticated", credential.getId());
                 Principal principal = principalResolver.resolve(credential);
                 TicketGrantingTicket ticketGrantingTicket = ticketManager.createTicketGrantingTicket(credential);
+                log.info("{} authenticated successfully", credential.getId());
                 log.info("TicketGrantingTicket created: {}, for principal {}", ticketGrantingTicket.getId(), principal.getId());
                 return new Authentication(
                         principal,
@@ -46,10 +47,11 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
                         ticketGrantingTicket,
                         new HashMap<String, Object>(),
                         true,
-                        String.format("%s successfully authenticated", credential.getId()));
+                        String.format("%s authenticated successfully", credential.getId()));
             } else {
+                log.info("{} failed authenticating, caused by {}", credential.getId(), result.getMessage());
                 return new Authentication(null, new Date(), null, null,
-                        false, String.format("%s failed authenticating, caused by: %s", credential.getId(), result.getMessage()));
+                        false, result.getMessage());
             }
         } catch (AuthenticationException e) {
             log.error(e.getMessage(), e);

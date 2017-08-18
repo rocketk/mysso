@@ -148,6 +148,14 @@ public class TicketManagerImpl implements TicketManager {
         this.ticketGrantingTicketIdGenerator = ticketGrantingTicketIdGenerator;
     }
 
+    public void setServiceTicketIdGenerator(UniqueIdGenerator serviceTicketIdGenerator) {
+        this.serviceTicketIdGenerator = serviceTicketIdGenerator;
+    }
+
+    public void setTokenIdGenerator(UniqueIdGenerator tokenIdGenerator) {
+        this.tokenIdGenerator = tokenIdGenerator;
+    }
+
     public long getLivingTimeForServiceTicket() {
         return livingTimeForServiceTicket;
     }

@@ -11,7 +11,7 @@ public class UsernamePasswordCredentialFactory implements CredentialFactory {
     private String keyForUsername = "username";
     private String keyForPassword = "password";
     @Override
-    public Credential createCredential(Map<String, Object> params) {
+    public Credential createCredential(Map<String, String> params) {
         Assert.notNull(params);
         Object username = params.get(keyForUsername);
         Object password = params.get(keyForPassword);

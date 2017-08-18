@@ -12,4 +12,80 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     <context:property-placeholder ignore-unresolvable="true" location="classpath:config.properties" />
 
+    <bean id="ticketRegistry" class="mysso.ticket.registry.InMemoryTicketRegistry"/>
+    <bean id="ticketManager" class="mysso.ticket.TicketManagerImpl">
+        <property name="ticketRegistry" ref="ticketRegistry"/>
+        <property name="livingTimeForServiceTicket" value="20000"/>
+        <property name="livingTimeForToken" value="500000"/>
+        <property name="ticketGrantingTicketIdGenerator" ref="ticketGrantingTicketIdGenerator"/>
+        <property name="serviceTicketIdGenerator" ref="serviceTicketIdGenerator"/>
+        <property name="tokenIdGenerator" ref="tokenIdGenerator"/>
+    </bean>
+
+    <bean id="ticketGrantingTicketIdGenerator" class="mysso.util.UUIDGenerator">
+        <property name="prefix" value="tgt-"/>
+        <property name="suffix" value=""/>
+    </bean>
+    <bean id="serviceTicketIdGenerator" class="mysso.util.UUIDGenerator">
+        <property name="prefix" value="st-"/>
+        <property name="suffix" value=""/>
+    </bean>
+    <bean id="tokenIdGenerator" class="mysso.util.UUIDGenerator">
+        <property name="prefix" value="tk-"/>
+        <property name="suffix" value=""/>
+    </bean>
+
+    <bean id="serviceProviderRegistry" class="mysso.serviceprovider.registry.InMemoryServiceProviderRegistry" c:map-ref="serviceProvidersMap"/>
+    <util:map id="serviceProvidersMap">
+        <entry key="sp-SampleServiceProvider001">
+            <bean class="mysso.serviceprovider.ServiceProvider">
+                <property name="id" value="sp-859f3de832604305b5c035713561f4b9"/>
+                <property name="description" value="sp-SampleServiceProvider001"/>
+                <property name="name" value="SampleServiceProvider001"/>
+                <property name="homeUrl" value="http://my.company.com:9080/sample"/>
+                <property name="accessServiceProviderPolicy" value="ALLOW_ALL"/>
+                <!-- logoutUrls 可以是多个，用;隔开，最好使用ip而不是域名 -->
+                <property name="logoutUrls" value="http://127.0.0.1:9080/sample"/>
+                <property name="secretKey" value="anyRandomSecretKey"/>
+            </bean>
+        </entry>
+    </util:map>
+
+    <bean id="authenticationManager" class="mysso.authentication.DefaultAuthenticationManagerImpl">
+        <property name="ticketManager" ref="ticketManager"/>
+        <property name="authenticationHandler" ref="authenticationHandler"/>
+        <property name="principalResolver" ref="principalResolver"/>
+    </bean>
+    <bean id="authenticationHandler" class="mysso.authentication.handler.AcceptUsersAuthenticationHandler">
+        <property name="passwordEncoder" ref="passwordEncoder"/>
+        <property name="users" ref="users"/>
+    </bean>
+    <bean id="passwordEncoder" class="mysso.authentication.handler.PlainTextPasswordEncoder"/>
+    <util:map id="users">
+        <!-- key: username, value: password -->
+        <entry key="jack" value="123123"/>
+        <entry key="penny" value="123123"/>
+    </util:map>
+    <bean id="principalResolver" class="mysso.authentication.principal.SimplePrincipalResolver">
+        <property name="attributeRepository" ref="attributeRepository"/>
+    </bean>
+    <bean id="attributeRepository" class="mysso.authentication.principal.SimpleUserAttributeRepository" c:userAttributeMaps-ref="userAttributesMaps"/>
+    <util:map id="userAttributesMaps">
+        <entry key="jack" value-ref="attributesOfJack"/>
+        <entry key="penny" value-ref="attributesOfPenny"/>
+    </util:map>
+    <util:map id="attributesOfJack">
+        <entry key="department" value="technology"/>
+        <entry key="level" value="t4"/>
+    </util:map>
+    <util:map id="attributesOfPenny">
+        <entry key="department" value="human_resource"/>
+        <entry key="level" value="m1"/>
+    </util:map>
+
+    <!-- filters -->
+    <bean id="characterEncodingFilter" class="org.springframework.web.filter.CharacterEncodingFilter">
+        <property name="encoding" value="UTF-8"/>
+        <property name="forceEncoding" value="true"/>
+    </bean>
 </beans>
