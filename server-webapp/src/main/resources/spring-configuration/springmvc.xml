@@ -3,12 +3,14 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <context:property-placeholder ignore-unresolvable="true" location="classpath:config.properties"/>
+    <context:property-placeholder ignore-unresolvable="true" properties-ref="config"/>
+    <util:properties id="config" location="classpath:config.properties"/>
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="WEB-INF/view/jsp/"/>
         <property name="suffix" value=".jsp"/>
@@ -40,11 +42,32 @@
         <property name="authenticationManager" ref="authenticationManager"/>
         <property name="credentialFactory" ref="credentialFactory"/>
         <property name="serviceProviderRegistry" ref="serviceProviderRegistry"/>
+        <property name="webUtils" ref="webUtils"/>
+        <property name="authNameInSession" value="authentication"/>
+        <property name="spidNameInParams" value="${spidNameInParams}"/>
+        <property name="tgcNameInCookie" value="${tgcNameInCookie}"/>
     </bean>
     <bean id="credentialFactory" class="mysso.authentication.credential.UsernamePasswordCredentialFactory">
         <property name="keyForUsername" value="username"/>
         <property name="keyForPassword" value="password"/>
     </bean>
+    <bean id="webUtils" class="mysso.web.WebUtils">
+        <property name="authNameInSession" value="authentication"/>
+        <property name="tgcNameInCookie" value="${tgcNameInCookie}"/>
+    </bean>
+    <bean class="mysso.web.HomeController">
+    </bean>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/login"/>
+            <mvc:exclude-mapping path="/static"/>
+            <bean id="authenticationInterceptor" class="mysso.web.AuthenticationInterceptor">
+                <property name="webUtils" ref="webUtils"/>
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 
 </beans>

@@ -33,8 +33,22 @@ public class AuthenticationController {
     @NotNull
     private ServiceProviderRegistry serviceProviderRegistry;
 
+    @NotNull
+    private WebUtils webUtils;
+
+    private String authNameInSession;
+
+    private String tgcNameInCookie;
+
+    private String spidNameInParams;
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(HttpServletRequest request, @RequestParam Map<String, String> params) {
+    public String login(HttpServletRequest request,
+                        HttpServletResponse response,
+                        @RequestParam Map<String, String> params) {
+        if (webUtils.isAuthenticated(request, response)) {
+            return "redirect:/home";
+        }
         String spid = params.get("spid");
         if (spid != null) {
             ServiceProvider sp = serviceProviderRegistry.get(spid);
@@ -54,14 +68,16 @@ public class AuthenticationController {
         Credential credential = credentialFactory.createCredential(params);
         Authentication authentication = authenticationManager.authenticate(credential);
         if (authentication != null && authentication.isSuccess()) {
-            // set cookies, todo set cookie's path, secure
-            response.addCookie(new Cookie("TGC", authentication.getTicketGrantingTicket().getId()));
+            // set cookies, todo set cookie's httpOnly flag
+            Cookie cookie = new Cookie(tgcNameInCookie, authentication.getTicketGrantingTicket().getId());
+            cookie.setPath(request.getContextPath());
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
             // put principle and authentication into session
-            request.getSession().setAttribute("principal", authentication.getPrincipal());
-            request.getSession().setAttribute("authentication", authentication);
+            request.getSession().setAttribute(authNameInSession, authentication);
             // todo reset sessionId
             // check service provider, redirect to the serviceProvider's home url.
-            String spid = params.get("spid");
+            String spid = params.get(spidNameInParams);
             if (spid != null) {
                 ServiceProvider sp = serviceProviderRegistry.get(spid);
                 if (sp != null && StringUtils.isNotBlank(sp.getHomeUrl())) {
@@ -71,10 +87,20 @@ public class AuthenticationController {
             // if the spid is empty, then return the success page
             return "loginSuccess";
         } else {
-            // put warning message into the ModelMap
+            // put warning message into the ModelMap953720
             request.setAttribute("message", authentication.getMessage());
             return "login";
         }
+    }
+
+    @RequestMapping(value = "/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // delete tgc from cookies
+        webUtils.deleteCookieByName(response, tgcNameInCookie);
+        // invalid session
+        request.getSession().invalidate();
+        // redirect to login page
+        return "redirect:/login";
     }
 
     public void setCredentialFactory(CredentialFactory credentialFactory) {
@@ -87,5 +113,21 @@ public class AuthenticationController {
 
     public void setServiceProviderRegistry(ServiceProviderRegistry serviceProviderRegistry) {
         this.serviceProviderRegistry = serviceProviderRegistry;
+    }
+
+    public void setWebUtils(WebUtils webUtils) {
+        this.webUtils = webUtils;
+    }
+
+    public void setAuthNameInSession(String authNameInSession) {
+        this.authNameInSession = authNameInSession;
+    }
+
+    public void setTgcNameInCookie(String tgcNameInCookie) {
+        this.tgcNameInCookie = tgcNameInCookie;
+    }
+
+    public void setSpidNameInParams(String spidNameInParams) {
+        this.spidNameInParams = spidNameInParams;
     }
 }

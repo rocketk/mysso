@@ -41,8 +41,7 @@ public class AcceptUsersAuthenticationHandler implements AuthenticationHandler {
         }
         if (!users.containsKey(credential.getId())) {
             log.info("the user id {} does not exist", credential.getId());
-            return new HandlerResult(false, "user does not exist")
-            );
+            return new HandlerResult(false, "user does not exist");
         }
 
         UsernamePasswordCredential usernamePasswordCredential = (UsernamePasswordCredential) credential;
