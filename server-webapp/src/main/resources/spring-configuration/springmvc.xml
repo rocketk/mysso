@@ -25,16 +25,16 @@
                         <value>application/json;charset=UTF-8</value>
                     </list>
                 </property>
-                <property name="features">
-                    <list>
-                        <value>WriteNullStringAsEmpty</value>
-                        <value>WriteMapNullValue</value>
-                        <value>WriteNullListAsEmpty</value>
-                        <value>WriteNullNumberAsZero</value>
-                        <value>WriteNullBooleanAsFalse</value>
-                        <value>QuoteFieldNames</value>
-                    </list>
-                </property>
+                <!--<property name="features">-->
+                    <!--<list>-->
+                        <!--<value>WriteNullStringAsEmpty</value>-->
+                        <!--<value>WriteMapNullValue</value>-->
+                        <!--<value>WriteNullListAsEmpty</value>-->
+                        <!--<value>WriteNullNumberAsZero</value>-->
+                        <!--<value>WriteNullBooleanAsFalse</value>-->
+                        <!--<value>QuoteFieldNames</value>-->
+                    <!--</list>-->
+                <!--</property>-->
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
@@ -63,6 +63,7 @@
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/login"/>
             <mvc:exclude-mapping path="/static"/>
+            <mvc:exclude-mapping path="/validate/**"/>
             <bean id="authenticationInterceptor" class="mysso.web.AuthenticationInterceptor">
                 <property name="webUtils" ref="webUtils"/>
             </bean>

@@ -15,7 +15,7 @@ import java.util.Map;
 public class SimplePrincipalResolver implements PrincipalResolver {
 
     @NotNull
-    private AttributeRepository attributeRepository;
+    private PrincipalFactory principalFactory;
 
     @Override
     public boolean supports(Credential credential) {
@@ -31,13 +31,10 @@ public class SimplePrincipalResolver implements PrincipalResolver {
                     credential.getClass().getSimpleName(), this.getClass().getSimpleName())
             );
         }
-        SimplePrincipal principal = new SimplePrincipal(credential.getId());
-        Map<String, String> attributes = attributeRepository.getAttributeById(credential.getId());
-        principal.setAttributes(attributes);
-        return principal;
+        return principalFactory.createPrincipal(credential.getId());
     }
 
-    public void setAttributeRepository(AttributeRepository attributeRepository) {
-        this.attributeRepository = attributeRepository;
+    public void setPrincipalFactory(PrincipalFactory principalFactory) {
+        this.principalFactory = principalFactory;
     }
 }
