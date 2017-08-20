@@ -67,6 +67,9 @@
         <entry key="penny" value="123123"/>
     </util:map>
     <bean id="principalResolver" class="mysso.authentication.principal.SimplePrincipalResolver">
+        <property name="principalFactory" ref="principalFactory"/>
+    </bean>
+    <bean id="principalFactory" class="mysso.authentication.principal.SimplePrincipalFactory">
         <property name="attributeRepository" ref="attributeRepository"/>
     </bean>
     <bean id="attributeRepository" class="mysso.authentication.principal.SimpleUserAttributeRepository" c:userAttributeMaps-ref="userAttributesMaps"/>

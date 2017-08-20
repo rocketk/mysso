@@ -57,6 +57,15 @@
     </bean>
     <bean class="mysso.web.HomeController">
     </bean>
+    <bean class="mysso.web.ValidationController">
+        <property name="principalFactory" ref="principalFactory"/>
+        <property name="serviceProviderRegistry" ref="serviceProviderRegistry"/>
+        <property name="ticketManager" ref="ticketManager"/>
+        <property name="spidNameInValidation" value="${spidNameInValidation}"/>
+        <property name="spkeyNameInValidation" value="${spkeyNameInValidation}"/>
+        <property name="stNameInValidation" value="${stNameInValidation}"/>
+        <property name="tkNameInValidation" value="${tkNameInValidation}"/>
+    </bean>
 
     <mvc:interceptors>
         <mvc:interceptor>

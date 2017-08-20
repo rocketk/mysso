@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +34,7 @@ public class ValidationController {
     private String stNameInValidation;
     private String tkNameInValidation;
 
-    @RequestMapping(value = "/validate/st")
+    @RequestMapping(value = "/validate/st", method = RequestMethod.POST)
     @ResponseBody
     public Assertion validateServiceTicket(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -80,5 +81,29 @@ public class ValidationController {
 
     public void setTicketManager(TicketManager ticketManager) {
         this.ticketManager = ticketManager;
+    }
+
+    public void setServiceProviderRegistry(ServiceProviderRegistry serviceProviderRegistry) {
+        this.serviceProviderRegistry = serviceProviderRegistry;
+    }
+
+    public void setPrincipalFactory(PrincipalFactory principalFactory) {
+        this.principalFactory = principalFactory;
+    }
+
+    public void setSpidNameInValidation(String spidNameInValidation) {
+        this.spidNameInValidation = spidNameInValidation;
+    }
+
+    public void setSpkeyNameInValidation(String spkeyNameInValidation) {
+        this.spkeyNameInValidation = spkeyNameInValidation;
+    }
+
+    public void setStNameInValidation(String stNameInValidation) {
+        this.stNameInValidation = stNameInValidation;
+    }
+
+    public void setTkNameInValidation(String tkNameInValidation) {
+        this.tkNameInValidation = tkNameInValidation;
     }
 }
