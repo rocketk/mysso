@@ -74,7 +74,7 @@ public class ValidationController {
             assertion.setPrincipal(principal);
             assertion.setExpiredTime(token.getExpiredTime());
             return assertion;
-        } catch (Throwable t) {
+        } catch (Exception e) {
             return new Assertion(Constants.ERROR, "an error occurred");
         }
     }
