@@ -34,46 +34,85 @@ public class ValidationController {
     private String stNameInValidation;
     private String tkNameInValidation;
 
+    private Assertion validateServiceProvider(String spid, String secretKey) {
+        // validate the spid
+        if (StringUtils.isBlank(spid)) {
+            return new Assertion(Constants.INVALID_SPID, "invalid spid");
+        }
+        if (StringUtils.isBlank(secretKey)) {
+            return new Assertion(Constants.INVALID_SPKEY, "invalid secret key");
+        }
+        ServiceProvider serviceProvider = serviceProviderRegistry.get(spid);
+        if (serviceProvider == null) {
+            return new Assertion(Constants.INVALID_SPID, "invalid spid");
+        }
+        // validate the secret key of sp
+        Assert.notNull(serviceProvider.getSecretKey(),
+                "the secret key of serviceProvider is null, spid " + spid);
+        if (!serviceProvider.getSecretKey().equals(spid)) {
+            return new Assertion(Constants.INVALID_SPKEY, "invalid secret key");
+        }
+        return null;
+    }
+
     @RequestMapping(value = "/validate/st", method = RequestMethod.POST)
     @ResponseBody
     public Assertion validateServiceTicket(HttpServletRequest request, HttpServletResponse response) {
         try {
-            // validate the spid
             String spid = request.getParameter(spidNameInValidation);
-            if (StringUtils.isBlank(spid)) {
-                return new Assertion(Constants.INVALID_SPID, "invalid spid");
-            }
             String secretKey = request.getParameter(spkeyNameInValidation);
-            if (StringUtils.isBlank(secretKey)) {
-                return new Assertion(Constants.INVALID_SPKEY, "invalid secret key");
-            }
-            ServiceProvider serviceProvider = serviceProviderRegistry.get(spid);
-            if (serviceProvider == null) {
-                return new Assertion(Constants.INVALID_SPID, "invalid spid");
-            }
-            // validate the secret key of sp
-            Assert.notNull(serviceProvider.getSecretKey(),
-                    "the secret key of serviceProvider is null, spid " + spid);
-            if (!serviceProvider.getSecretKey().equals(spid)) {
-                return new Assertion(Constants.INVALID_SPKEY, "invalid secret key");
+            Assertion assertion = validateServiceProvider(spid, secretKey);
+            if (assertion != null) {
+                return assertion;
             }
             // validate the st
             String st = request.getParameter(stNameInValidation);
             if (StringUtils.isBlank(st)) {
-                return new Assertion(Constants.INVALID_ST, "invalid st");
+                return new Assertion(Constants.INVALID_ST, "st is null or empty");
             }
             TicketValidateResult result = ticketManager.validateServiceTicket(st, spid);
-            if (result.getStatus().equals(TicketStatus.INVALID)) {
-                return new Assertion(Constants.INVALID_ST, "invalid st");
+            if (result.getCode() == Constants.VALID_TICKET) {
+                // get a token if validated successfully
+                Token token = result.getToken();
+                assertion = new Assertion(Constants.VALID_TICKET, "valid st");
+                assertion.setToken(token.getId());
+                Principal principal = principalFactory.createPrincipal(token.getCredentialId());
+                assertion.setPrincipal(principal);
+                assertion.setExpiredTime(token.getExpiredTime());
+                return assertion;
             }
-            // get a token if validated successfully
-            Token token = result.getToken();
-            Assertion assertion = new Assertion(Constants.VALID_TICKET, "valid st");
-            assertion.setToken(token.getId());
-            Principal principal = principalFactory.createPrincipal(token.getCredentialId());
-            assertion.setPrincipal(principal);
-            assertion.setExpiredTime(token.getExpiredTime());
-            return assertion;
+            return new Assertion(result.getCode(), result.getMessage());
+        } catch (Exception e) {
+            return new Assertion(Constants.ERROR, "an error occurred");
+        }
+    }
+    @RequestMapping(value = "/validate/tk", method = RequestMethod.POST)
+    @ResponseBody
+    public Assertion validateToken(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String spid = request.getParameter(spidNameInValidation);
+            String secretKey = request.getParameter(spkeyNameInValidation);
+            Assertion assertion = validateServiceProvider(spid, secretKey);
+            if (assertion != null) {
+                return assertion;
+            }
+            // validate the st
+            String tk = request.getParameter(tkNameInValidation);
+            if (StringUtils.isBlank(tk)) {
+                return new Assertion(Constants.INVALID_TK, "tk is null or empty");
+            }
+            TicketValidateResult result = ticketManager.validateToken(tk, spid);
+            if (result.getCode() == Constants.VALID_BUT_EXPIRED) {
+                // get a token if validated successfully
+                Token token = result.getToken();
+                assertion = new Assertion(Constants.VALID_TICKET, "valid tk");
+                assertion.setToken(token.getId());
+                Principal principal = principalFactory.createPrincipal(token.getCredentialId());
+                assertion.setPrincipal(principal);
+                assertion.setExpiredTime(token.getExpiredTime());
+                return assertion;
+            }
+            return new Assertion(result.getCode(), result.getMessage());
         } catch (Exception e) {
             return new Assertion(Constants.ERROR, "an error occurred");
         }

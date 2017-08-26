@@ -6,25 +6,25 @@ import java.io.Serializable;
  * Created by pengyu on 2017/8/17.
  */
 public class TicketValidateResult implements Serializable {
-    private TicketStatus status;
+    private int code;
     private String message;
     private Token token;
 
     public TicketValidateResult() {
     }
 
-    public TicketValidateResult(TicketStatus status, String message, Token token) {
-        this.status = status;
+    public TicketValidateResult(int code, String message, Token token) {
+        this.code = code;
         this.message = message;
         this.token = token;
     }
 
-    public TicketStatus getStatus() {
-        return status;
+    public int getCode() {
+        return code;
     }
 
-    public void setStatus(TicketStatus status) {
-        this.status = status;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public String getMessage() {

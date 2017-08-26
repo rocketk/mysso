@@ -3,6 +3,7 @@ package mysso.ticket;
 
 import mysso.authentication.credential.Credential;
 import mysso.ticket.registry.TicketRegistry;
+import mysso.util.Constants;
 import mysso.util.UniqueIdGenerator;
 import org.springframework.util.Assert;
 
@@ -92,11 +93,16 @@ public class TicketManagerImpl implements TicketManager {
         Assert.notNull(stId);
         Assert.notNull(spId);
         ServiceTicket st = ticketRegistry.get(stId, ServiceTicket.class);
-        // st存在, 并且未过期, 并且确实由指定的ServiceProvider所签发, 则校验成功
-        if (st != null && !st.isExpired() && spId.equals(st.getServiceProviderId())) {
-            return new TicketValidateResult(TicketStatus.VALID, TicketStatus.VALID.getDesc(), grantToken(st));
+        if (st == null) {
+            return new TicketValidateResult(Constants.INVALID_ST, "invalid service ticket", null);
         }
-        return new TicketValidateResult(TicketStatus.INVALID, TicketStatus.INVALID.getDesc(), null);
+        if (!spId.equals(st.getServiceProviderId())) {
+            return new TicketValidateResult(Constants.MISMATCH_SPID, "the given spid does not match the serviceTicket's spid", null);
+        }
+        if (st.isExpired()) {
+            return new TicketValidateResult(Constants.EXPIRED_ST, "the st has been expired", null);
+        }
+        return new TicketValidateResult(Constants.VALID_TICKET, "valid st", grantToken(st));
     }
 
     @Override
@@ -104,20 +110,23 @@ public class TicketManagerImpl implements TicketManager {
         Assert.notNull(tkId);
         Assert.notNull(spId);
         Token tk = ticketRegistry.get(tkId, Token.class);
-        // tk存在, 并且未过期, 并且确实由指定的ServiceProvider所签发, 则校验成功
-        if (tk != null && spId.equals(tk.getServiceProviderId())) {
-            if (tk.isExpired()) {
-                long now = System.currentTimeMillis();
-                Token newToken = new Token(tokenIdGenerator.getNewId(), now, tk.getCredentialId(),
-                        tk.getTicketGrantingTicketId(), tk.getServiceProviderId(), now + livingTimeForToken);
-                ticketRegistry.delete(tk.getId(), Token.class);
-                ticketRegistry.add(newToken);
-                return new TicketValidateResult(TicketStatus.VALID_BUT_EXPIRED, TicketStatus.VALID_BUT_EXPIRED.getDesc(), newToken);
-            } else {
-                return new TicketValidateResult(TicketStatus.VALID, TicketStatus.VALID.getDesc(), tk);
-            }
+        if (tk == null) {
+            return new TicketValidateResult(Constants.INVALID_TK, "invalid token", null);
         }
-        return new TicketValidateResult(TicketStatus.INVALID, TicketStatus.INVALID.getDesc(), tk);
+        if (!spId.equals(tk.getServiceProviderId())) {
+            return new TicketValidateResult(Constants.MISMATCH_SPID, "the given spid does not match the token's spid", null);
+        }
+        // tk存在, 并且未过期, 并且确实由指定的ServiceProvider所签发, 则校验成功
+        if (tk.isExpired()) {
+            long now = System.currentTimeMillis();
+            Token newToken = new Token(tokenIdGenerator.getNewId(), now, tk.getCredentialId(),
+                    tk.getTicketGrantingTicketId(), tk.getServiceProviderId(), now + livingTimeForToken);
+            ticketRegistry.delete(tk.getId(), Token.class);
+            ticketRegistry.add(newToken);
+            return new TicketValidateResult(Constants.VALID_BUT_EXPIRED, "token is valid but expired", newToken);
+        } else {
+            return new TicketValidateResult(Constants.VALID_TICKET, "valid token", tk);
+        }
     }
 
     @Override
