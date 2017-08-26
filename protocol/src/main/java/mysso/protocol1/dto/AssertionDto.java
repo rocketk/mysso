@@ -1,30 +1,40 @@
-package mysso.web.dto;
+package mysso.protocol1.dto;
 
-import mysso.authentication.principal.Principal;
+
+import java.io.Serializable;
 
 /**
- * ticket校验结果
+ * 用于封装server端向client端返回ticket校验结果的实体类
  * ticket既可以指ServiceTicket也可以指Token
  * Created by pengyu on 17-8-19.
  */
-public class Assertion {
+public class AssertionDto implements Serializable {
     /**
-     * 表示校验结果的数值，取值范围参见 mysso.util.Constants
+     * 表示校验结果的数值，取值范围参见 mysso.common.protocol1.Constants
      */
     private int code;
+    /**
+     * 提示信息
+     */
     private String message;
     /**
      * 需要派发新的token时（例如st校验通过后或者tk超时需要更换），此字段不为null。否则为null。
      * 此字段实际上对应的是Token对象的id字段
      */
     private String token; // tokenId
+    /**
+     * token过期时间
+     */
     private long expiredTime;
-    private Principal principal;
+    /**
+     * 用户信息
+     */
+    private PrincipalDto principal;
 
-    public Assertion() {
+    public AssertionDto() {
     }
 
-    public Assertion(int code, String message) {
+    public AssertionDto(int code, String message) {
         this.code = code;
         this.message = message;
     }
@@ -61,11 +71,11 @@ public class Assertion {
         this.expiredTime = expiredTime;
     }
 
-    public Principal getPrincipal() {
+    public PrincipalDto getPrincipal() {
         return principal;
     }
 
-    public void setPrincipal(Principal principal) {
+    public void setPrincipal(PrincipalDto principal) {
         this.principal = principal;
     }
 }

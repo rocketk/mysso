@@ -1,6 +1,7 @@
 package mysso.ticket;
 
 import mysso.authentication.credential.Credential;
+import mysso.protocol1.Constants;
 import mysso.serviceprovider.ServiceProvider;
 import mysso.ticket.exception.TicketException;
 import mysso.ticket.registry.InMemoryTicketRegistry;
@@ -98,7 +99,7 @@ public class TicketManagerImplTest {
         TicketGrantingTicket tgt = manager.createTicketGrantingTicket(credential);
         String spId = "sp-001";
         ServiceTicket st = manager.grantServiceTicket(tgt, spId);
-        assertTrue("st应当校验通过", manager.validateServiceTicket(st.getId(), spId).getStatus()==TicketStatus.VALID);
+        assertTrue("st应当校验通过", manager.validateServiceTicket(st.getId(), spId).getCode() == Constants.VALID_TICKET);
     }
     @Test
     public void verifyValidateExpiredServiceTicket() {
@@ -109,7 +110,7 @@ public class TicketManagerImplTest {
         String spId = "sp-001";
         ServiceTicket st = manager.grantServiceTicket(tgt, spId);
         st.markExpired();
-        assertFalse("st应当校验失败, 因为它已经失效了", manager.validateServiceTicket(st.getId(), spId).getStatus()==TicketStatus.VALID_BUT_EXPIRED);
+        assertFalse("st应当校验失败, 因为它已经失效了", manager.validateServiceTicket(st.getId(), spId).getCode()==Constants.EXPIRED_ST);
     }
     @Test
     public void verifyValidateDestroyedServiceTicket() {
@@ -120,7 +121,7 @@ public class TicketManagerImplTest {
         String spId = "sp-001";
         ServiceTicket st = manager.grantServiceTicket(tgt, spId);
         manager.destroyTicketGrantingTicket(tgt.getId());
-        assertFalse("st应当校验失败, 因为它已经被销毁了", manager.validateServiceTicket(st.getId(), spId).getStatus()==TicketStatus.INVALID);
+        assertFalse("st应当校验失败, 因为它已经被销毁了", manager.validateServiceTicket(st.getId(), spId).getCode()==Constants.INVALID_ST);
     }
     @Test
     public void verifyValidateServiceTicketWithInvalidServiceProvider() {
@@ -131,7 +132,7 @@ public class TicketManagerImplTest {
         String spId = "sp-001";
         ServiceTicket st = manager.grantServiceTicket(tgt, spId);
         assertFalse("st应当校验失败, 因为它所包含的ServiceProvider与所给定的不一致",
-                manager.validateServiceTicket(st.getId(), "sp-002").getStatus()==TicketStatus.INVALID);
+                manager.validateServiceTicket(st.getId(), "sp-002").getCode() == Constants.MISMATCH_SPID);
     }
 
     protected TicketManager getNewCentralTicketManager() {

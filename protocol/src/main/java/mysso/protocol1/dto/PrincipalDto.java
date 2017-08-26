@@ -1,0 +1,37 @@
+package mysso.protocol1.dto;
+
+import java.io.Serializable;
+import java.util.Map;
+
+/**
+ * Created by pengyu on 17-8-26.
+ */
+public class PrincipalDto implements Serializable {
+    private String id;
+    private Map<String, String> attributes;
+
+    public PrincipalDto(String id) {
+        this.id = id;
+    }
+
+    public PrincipalDto(String id, Map<String, String> attributes) {
+        this.id = id;
+        this.attributes = attributes;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Map<String, String> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
+    }
+}

@@ -2,8 +2,8 @@ package mysso.ticket;
 
 
 import mysso.authentication.credential.Credential;
+import mysso.protocol1.Constants;
 import mysso.ticket.registry.TicketRegistry;
-import mysso.util.Constants;
 import mysso.util.UniqueIdGenerator;
 import org.springframework.util.Assert;
 

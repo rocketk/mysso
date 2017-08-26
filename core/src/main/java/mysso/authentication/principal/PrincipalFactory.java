@@ -13,4 +13,12 @@ public interface PrincipalFactory {
      * @return the principal
      */
     Principal createPrincipal(String id);
+    /**
+     * Create principal.
+     *
+     * @param id the id
+     * @param attributes attributes
+     * @return the principal
+     */
+    Principal createPrincipal(String id, Map<String, String> attributes);
 }

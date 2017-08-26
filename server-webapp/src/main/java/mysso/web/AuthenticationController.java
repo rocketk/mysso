@@ -73,7 +73,7 @@ public class AuthenticationController {
             cookie.setPath(request.getContextPath());
             cookie.setHttpOnly(true);
             response.addCookie(cookie);
-            // put principle and authentication into session
+            // put principal and authentication into session
             request.getSession().setAttribute(authNameInSession, authentication);
             // todo reset sessionId
             // check service provider, redirect to the serviceProvider's home url.

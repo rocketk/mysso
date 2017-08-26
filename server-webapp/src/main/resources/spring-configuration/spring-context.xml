@@ -66,7 +66,7 @@
         <entry key="jack" value="123123"/>
         <entry key="penny" value="123123"/>
     </util:map>
-    <bean id="principalResolver" class="mysso.authentication.principal.SimplePrincipalResolver">
+    <bean id="principalResolver" class="mysso.authentication.principal.AttributedPrincipalResolver">
         <property name="principalFactory" ref="principalFactory"/>
     </bean>
     <bean id="principalFactory" class="mysso.authentication.principal.SimplePrincipalFactory">

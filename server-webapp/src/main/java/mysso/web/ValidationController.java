@@ -1,15 +1,15 @@
 package mysso.web;
 
 import mysso.authentication.principal.Principal;
-import mysso.authentication.principal.PrincipalFactory;
+import mysso.authentication.principal.PrincipalResolver;
+import mysso.protocol1.Constants;
+import mysso.protocol1.dto.PrincipalDto;
 import mysso.serviceprovider.ServiceProvider;
 import mysso.serviceprovider.registry.ServiceProviderRegistry;
 import mysso.ticket.TicketManager;
-import mysso.ticket.TicketStatus;
 import mysso.ticket.TicketValidateResult;
 import mysso.ticket.Token;
-import mysso.util.Constants;
-import mysso.web.dto.Assertion;
+import mysso.protocol1.dto.AssertionDto;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -27,94 +27,91 @@ import javax.servlet.http.HttpServletResponse;
 public class ValidationController {
     private TicketManager ticketManager;
     private ServiceProviderRegistry serviceProviderRegistry;
-    private PrincipalFactory principalFactory;
+    private PrincipalResolver principalResolver;
 
-    private String spidNameInValidation;
-    private String spkeyNameInValidation;
-    private String stNameInValidation;
-    private String tkNameInValidation;
 
-    private Assertion validateServiceProvider(String spid, String secretKey) {
+
+    private AssertionDto validateServiceProvider(String spid, String secretKey) {
         // validate the spid
         if (StringUtils.isBlank(spid)) {
-            return new Assertion(Constants.INVALID_SPID, "invalid spid");
+            return new AssertionDto(Constants.INVALID_SPID, "invalid spid");
         }
         if (StringUtils.isBlank(secretKey)) {
-            return new Assertion(Constants.INVALID_SPKEY, "invalid secret key");
+            return new AssertionDto(Constants.INVALID_SPKEY, "invalid secret key");
         }
         ServiceProvider serviceProvider = serviceProviderRegistry.get(spid);
         if (serviceProvider == null) {
-            return new Assertion(Constants.INVALID_SPID, "invalid spid");
+            return new AssertionDto(Constants.INVALID_SPID, "invalid spid");
         }
         // validate the secret key of sp
         Assert.notNull(serviceProvider.getSecretKey(),
                 "the secret key of serviceProvider is null, spid " + spid);
         if (!serviceProvider.getSecretKey().equals(spid)) {
-            return new Assertion(Constants.INVALID_SPKEY, "invalid secret key");
+            return new AssertionDto(Constants.INVALID_SPKEY, "invalid secret key");
         }
         return null;
     }
 
     @RequestMapping(value = "/validate/st", method = RequestMethod.POST)
     @ResponseBody
-    public Assertion validateServiceTicket(HttpServletRequest request, HttpServletResponse response) {
+    public AssertionDto validateServiceTicket(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String spid = request.getParameter(spidNameInValidation);
-            String secretKey = request.getParameter(spkeyNameInValidation);
-            Assertion assertion = validateServiceProvider(spid, secretKey);
+            String spid = request.getParameter(Constants.PARAM_SPID);
+            String secretKey = request.getParameter(Constants.PARAM_SPKEY);
+            AssertionDto assertion = validateServiceProvider(spid, secretKey);
             if (assertion != null) {
                 return assertion;
             }
             // validate the st
-            String st = request.getParameter(stNameInValidation);
+            String st = request.getParameter(Constants.PARAM_SERVICE_TICKET);
             if (StringUtils.isBlank(st)) {
-                return new Assertion(Constants.INVALID_ST, "st is null or empty");
+                return new AssertionDto(Constants.INVALID_ST, "st is null or empty");
             }
             TicketValidateResult result = ticketManager.validateServiceTicket(st, spid);
             if (result.getCode() == Constants.VALID_TICKET) {
                 // get a token if validated successfully
                 Token token = result.getToken();
-                assertion = new Assertion(Constants.VALID_TICKET, "valid st");
+                assertion = new AssertionDto(Constants.VALID_TICKET, "valid st");
                 assertion.setToken(token.getId());
-                Principal principal = principalFactory.createPrincipal(token.getCredentialId());
-                assertion.setPrincipal(principal);
+                Principal principal = principalResolver.resolve(token.getCredentialId());
+                assertion.setPrincipal(new PrincipalDto(principal.getId(), principal.getAttributes()));
                 assertion.setExpiredTime(token.getExpiredTime());
                 return assertion;
             }
-            return new Assertion(result.getCode(), result.getMessage());
+            return new AssertionDto(result.getCode(), result.getMessage());
         } catch (Exception e) {
-            return new Assertion(Constants.ERROR, "an error occurred");
+            return new AssertionDto(Constants.ERROR, "an error occurred");
         }
     }
     @RequestMapping(value = "/validate/tk", method = RequestMethod.POST)
     @ResponseBody
-    public Assertion validateToken(HttpServletRequest request, HttpServletResponse response) {
+    public AssertionDto validateToken(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String spid = request.getParameter(spidNameInValidation);
-            String secretKey = request.getParameter(spkeyNameInValidation);
-            Assertion assertion = validateServiceProvider(spid, secretKey);
+            String spid = request.getParameter(Constants.PARAM_SPID);
+            String secretKey = request.getParameter(Constants.PARAM_SPKEY);
+            AssertionDto assertion = validateServiceProvider(spid, secretKey);
             if (assertion != null) {
                 return assertion;
             }
             // validate the st
-            String tk = request.getParameter(tkNameInValidation);
+            String tk = request.getParameter(Constants.PARAM_TOKEN);
             if (StringUtils.isBlank(tk)) {
-                return new Assertion(Constants.INVALID_TK, "tk is null or empty");
+                return new AssertionDto(Constants.INVALID_TK, "tk is null or empty");
             }
             TicketValidateResult result = ticketManager.validateToken(tk, spid);
             if (result.getCode() == Constants.VALID_BUT_EXPIRED) {
                 // get a token if validated successfully
                 Token token = result.getToken();
-                assertion = new Assertion(Constants.VALID_TICKET, "valid tk");
+                assertion = new AssertionDto(Constants.VALID_TICKET, "valid tk");
                 assertion.setToken(token.getId());
-                Principal principal = principalFactory.createPrincipal(token.getCredentialId());
-                assertion.setPrincipal(principal);
+                Principal principal = principalResolver.resolve(token.getCredentialId());
+                assertion.setPrincipal(new PrincipalDto(principal.getId(), principal.getAttributes()));
                 assertion.setExpiredTime(token.getExpiredTime());
                 return assertion;
             }
-            return new Assertion(result.getCode(), result.getMessage());
+            return new AssertionDto(result.getCode(), result.getMessage());
         } catch (Exception e) {
-            return new Assertion(Constants.ERROR, "an error occurred");
+            return new AssertionDto(Constants.ERROR, "an error occurred");
         }
     }
 
@@ -126,23 +123,7 @@ public class ValidationController {
         this.serviceProviderRegistry = serviceProviderRegistry;
     }
 
-    public void setPrincipalFactory(PrincipalFactory principalFactory) {
-        this.principalFactory = principalFactory;
-    }
-
-    public void setSpidNameInValidation(String spidNameInValidation) {
-        this.spidNameInValidation = spidNameInValidation;
-    }
-
-    public void setSpkeyNameInValidation(String spkeyNameInValidation) {
-        this.spkeyNameInValidation = spkeyNameInValidation;
-    }
-
-    public void setStNameInValidation(String stNameInValidation) {
-        this.stNameInValidation = stNameInValidation;
-    }
-
-    public void setTkNameInValidation(String tkNameInValidation) {
-        this.tkNameInValidation = tkNameInValidation;
+    public void setPrincipalResolver(PrincipalResolver principalResolver) {
+        this.principalResolver = principalResolver;
     }
 }
