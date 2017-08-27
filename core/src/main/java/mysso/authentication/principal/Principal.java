@@ -10,5 +10,5 @@ public interface Principal extends Serializable {
 
     String getId();
 
-    Map<String, String> getAttributes();
+    Map<String, Object> getAttributes();
 }

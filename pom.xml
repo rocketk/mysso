@@ -27,6 +27,7 @@
         <javax.validation.version>1.1.0.Final</javax.validation.version>
         <fastjson.version>1.2.36</fastjson.version>
         <mockito.version>2.8.47</mockito.version>
+        <httpclient.version>4.5.2</httpclient.version>
         <!-- j2ee -->
         <servlet.api.version>3.0.1</servlet.api.version>
         <taglibs.version>1.1.2</taglibs.version>

@@ -15,7 +15,7 @@
     <bean id="ticketRegistry" class="mysso.ticket.registry.InMemoryTicketRegistry"/>
     <bean id="ticketManager" class="mysso.ticket.TicketManagerImpl">
         <property name="ticketRegistry" ref="ticketRegistry"/>
-        <property name="livingTimeForServiceTicket" value="20000"/>
+        <property name="livingTimeForServiceTicket" value="60000"/>
         <property name="livingTimeForToken" value="600000"/>
         <property name="ticketGrantingTicketIdGenerator" ref="ticketGrantingTicketIdGenerator"/>
         <property name="serviceTicketIdGenerator" ref="serviceTicketIdGenerator"/>
@@ -42,10 +42,11 @@
                 <property name="id" value="sp-859f3de832604305b5c035713561f4b9"/>
                 <property name="description" value="sp-SampleServiceProvider001"/>
                 <property name="name" value="SampleServiceProvider001"/>
-                <property name="homeUrl" value="http://localhost:9080/demo"/>
+                <!-- 如果没有首页, 则任意填写一个页面充当首页 -->
+                <property name="homeUrl" value="http://localhost:9080/demo/index.jsp"/>
                 <property name="accessServiceProviderPolicy" value="ALLOW_ALL"/>
                 <!-- logoutUrls 可以是多个，用;隔开，最好使用真实的ip地址而不是域名或负载ip地址 -->
-                <property name="logoutUrls" value="http://127.0.0.1:9080/sample"/>
+                <property name="logoutUrls" value="http://127.0.0.1:9080/demo/logout"/>
                 <property name="secretKey" value="anyRandomSecretKey"/>
             </bean>
         </entry>

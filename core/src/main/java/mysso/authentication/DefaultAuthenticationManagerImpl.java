@@ -36,10 +36,9 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
         try {
             HandlerResult result = authenticationHandler.authenticate(credential);
             if (result.isSuccess()) {
-                log.info("{} successfully authenticated", credential.getId());
+                log.info("{} authenticated successfully", credential.getId());
                 Principal principal = principalResolver.resolve(credential);
                 TicketGrantingTicket ticketGrantingTicket = ticketManager.createTicketGrantingTicket(credential);
-                log.info("{} authenticated successfully", credential.getId());
                 log.info("TicketGrantingTicket created: {}, for principal {}", ticketGrantingTicket.getId(), principal.getId());
                 return new Authentication(
                         principal,

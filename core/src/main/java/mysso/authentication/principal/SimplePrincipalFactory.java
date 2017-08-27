@@ -16,7 +16,7 @@ public class SimplePrincipalFactory implements PrincipalFactory {
     }
 
     @Override
-    public Principal createPrincipal(String id, Map<String, String> attributes) {
+    public Principal createPrincipal(String id, Map<String, Object> attributes) {
         Assert.notNull(id);
         return new SimplePrincipal(id, attributes);
     }

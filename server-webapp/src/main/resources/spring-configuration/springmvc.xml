@@ -21,8 +21,8 @@
             <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
                 <property name="supportedMediaTypes">
                     <list>
-                        <value>text/html;charset=UTF-8</value>
                         <value>application/json;charset=UTF-8</value>
+                        <value>text/html;charset=UTF-8</value>
                     </list>
                 </property>
                 <!--<property name="features">-->
@@ -68,7 +68,7 @@
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/login"/>
-            <mvc:exclude-mapping path="/static"/>
+            <mvc:exclude-mapping path="/static/**"/>
             <mvc:exclude-mapping path="/validate/**"/>
             <bean id="authenticationInterceptor" class="mysso.web.AuthenticationInterceptor">
                 <property name="webUtils" ref="webUtils"/>

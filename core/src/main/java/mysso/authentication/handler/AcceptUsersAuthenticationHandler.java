@@ -48,7 +48,7 @@ public class AcceptUsersAuthenticationHandler implements AuthenticationHandler {
         String encodedPassword = passwordEncoder.encode(usernamePasswordCredential.getPassword());
         String passwordFromRepository = users.get(credential.getId());
         if (StringUtils.equals(encodedPassword, passwordFromRepository)) {
-            log.info("user id {} is successfully authenticated", credential.getId());
+            log.info("user id {} is authenticated successfully", credential.getId());
             return new HandlerResult(true, "authenticated successfully");
         }
         log.info("invalid password, id %s", credential.getId());

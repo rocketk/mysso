@@ -10,11 +10,11 @@ import static org.junit.Assert.*;
  */
 public class SimpleUserAttributeRepositoryTest {
     private AttributeRepository getSimpleUserAttributeRepository() {
-        Map<String, Map<String, String>> users = new HashMap<>();
-        Map<String, String> jackAttributes = new HashMap<>();
+        Map<String, Map<String, Object>> users = new HashMap<>();
+        Map<String, Object> jackAttributes = new HashMap<>();
         jackAttributes.put("department", "technology");
         jackAttributes.put("level", "manager");
-        Map<String, String> peterAttributes = new HashMap<>();
+        Map<String, Object> peterAttributes = new HashMap<>();
         peterAttributes.put("department", "technology");
         peterAttributes.put("level", "manager");
         users.put("jack", jackAttributes);

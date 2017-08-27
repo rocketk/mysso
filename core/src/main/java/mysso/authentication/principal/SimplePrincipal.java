@@ -10,13 +10,13 @@ import java.util.Map;
  */
 public class SimplePrincipal implements Principal {
     private String id;
-    private Map<String, String> attributes;
+    private Map<String, Object> attributes;
 
     public SimplePrincipal(String id) {
         this.id = id;
     }
 
-    public SimplePrincipal(String id, Map<String, String> attributes) {
+    public SimplePrincipal(String id, Map<String, Object> attributes) {
         this.id = id;
         this.attributes = attributes;
     }
@@ -31,11 +31,11 @@ public class SimplePrincipal implements Principal {
     }
 
     @Override
-    public Map<String, String> getAttributes() {
+    public Map<String, Object> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Map<String, String> attributes) {
+    public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
 

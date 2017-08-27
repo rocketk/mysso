@@ -20,5 +20,5 @@ public interface PrincipalFactory {
      * @param attributes attributes
      * @return the principal
      */
-    Principal createPrincipal(String id, Map<String, String> attributes);
+    Principal createPrincipal(String id, Map<String, Object> attributes);
 }

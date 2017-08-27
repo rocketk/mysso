@@ -11,14 +11,14 @@ import java.util.Map;
  */
 public class SimpleUserAttributeRepository implements AttributeRepository {
     @NotNull
-    private Map<String, Map<String, String>> userAttributeMaps;
+    private Map<String, Map<String, Object>> userAttributeMaps;
 
-    public SimpleUserAttributeRepository(Map<String, Map<String, String>> userAttributeMaps) {
+    public SimpleUserAttributeRepository(Map<String, Map<String, Object>> userAttributeMaps) {
         this.userAttributeMaps = userAttributeMaps;
     }
 
     @Override
-    public Map<String, String> getAttributeById(String id) {
+    public Map<String, Object> getAttributeById(String id) {
         Validate.notNull(userAttributeMaps, "userAttributeMaps is null");
         return userAttributeMaps.get(id);
     }

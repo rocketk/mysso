@@ -11,6 +11,8 @@ import mysso.ticket.TicketValidateResult;
 import mysso.ticket.Token;
 import mysso.protocol1.dto.AssertionDto;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller
 public class ValidationController {
+    private Logger log = LoggerFactory.getLogger(getClass());
     private TicketManager ticketManager;
     private ServiceProviderRegistry serviceProviderRegistry;
     private PrincipalResolver principalResolver;
@@ -46,7 +49,7 @@ public class ValidationController {
         // validate the secret key of sp
         Assert.notNull(serviceProvider.getSecretKey(),
                 "the secret key of serviceProvider is null, spid " + spid);
-        if (!serviceProvider.getSecretKey().equals(spid)) {
+        if (!serviceProvider.getSecretKey().equals(secretKey)) {
             return new AssertionDto(Constants.INVALID_SPKEY, "invalid secret key");
         }
         return null;
@@ -60,15 +63,18 @@ public class ValidationController {
             String secretKey = request.getParameter(Constants.PARAM_SPKEY);
             AssertionDto assertion = validateServiceProvider(spid, secretKey);
             if (assertion != null) {
+                log.info("validated service ticket failed, assertion.code: {}, spid: {}", assertion.getCode(), spid);
                 return assertion;
             }
             // validate the st
             String st = request.getParameter(Constants.PARAM_SERVICE_TICKET);
+            log.info("validating service ticket, st: {}, spid: {}", st, spid);
             if (StringUtils.isBlank(st)) {
                 return new AssertionDto(Constants.INVALID_ST, "st is null or empty");
             }
             TicketValidateResult result = ticketManager.validateServiceTicket(st, spid);
             if (result.getCode() == Constants.VALID_TICKET) {
+                log.info("validated service ticket successfully, st: {}, spid: {}", st, spid);
                 // get a token if validated successfully
                 Token token = result.getToken();
                 assertion = new AssertionDto(Constants.VALID_TICKET, "valid st");
@@ -78,6 +84,7 @@ public class ValidationController {
                 assertion.setExpiredTime(token.getExpiredTime());
                 return assertion;
             }
+            log.info("validated service ticket failed, code: {}st: {}, spid: {}", result.getCode(), st, spid);
             return new AssertionDto(result.getCode(), result.getMessage());
         } catch (Exception e) {
             return new AssertionDto(Constants.ERROR, "an error occurred");
@@ -91,15 +98,18 @@ public class ValidationController {
             String secretKey = request.getParameter(Constants.PARAM_SPKEY);
             AssertionDto assertion = validateServiceProvider(spid, secretKey);
             if (assertion != null) {
+                log.info("validated token failed, assertion.code: {}, spid: {}", assertion.getCode(), spid);
                 return assertion;
             }
-            // validate the st
+            // validate the tk
             String tk = request.getParameter(Constants.PARAM_TOKEN);
+            log.info("validating token, tk: {}, spid: {}", tk, spid);
             if (StringUtils.isBlank(tk)) {
                 return new AssertionDto(Constants.INVALID_TK, "tk is null or empty");
             }
             TicketValidateResult result = ticketManager.validateToken(tk, spid);
             if (result.getCode() == Constants.VALID_BUT_EXPIRED) {
+                log.info("validated token successfully, the token is expired, tk: {}, spid: {}", tk, spid);
                 // get a token if validated successfully
                 Token token = result.getToken();
                 assertion = new AssertionDto(Constants.VALID_TICKET, "valid tk");
@@ -108,6 +118,11 @@ public class ValidationController {
                 assertion.setPrincipal(new PrincipalDto(principal.getId(), principal.getAttributes()));
                 assertion.setExpiredTime(token.getExpiredTime());
                 return assertion;
+            }
+            if (result.getCode() == Constants.VALID_TICKET) {
+                log.info("validated token successfully, code: {}, st: {}, spid: {}", result.getCode(), tk, spid);
+            } else {
+                log.info("validated token failed, code: {}st: {}, spid: {}", result.getCode(), tk, spid);
             }
             return new AssertionDto(result.getCode(), result.getMessage());
         } catch (Exception e) {

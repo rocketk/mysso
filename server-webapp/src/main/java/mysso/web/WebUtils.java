@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Created by pengyu on 17-8-18.
@@ -51,6 +52,14 @@ public class WebUtils {
         Cookie cookie = new Cookie(name, null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
+    }
+
+    public void invalidateTGT(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            Authentication authentication = (Authentication) session.getAttribute(authNameInSession);
+            authentication.getTicketGrantingTicket().markExpired();
+        }
     }
 
     public void setTgcNameInCookie(String tgcNameInCookie) {

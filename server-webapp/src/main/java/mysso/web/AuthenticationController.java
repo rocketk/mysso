@@ -85,6 +85,8 @@ public class AuthenticationController {
         Credential credential = credentialFactory.createCredential(params);
         Authentication authentication = authenticationManager.authenticate(credential);
         if (authentication != null && authentication.isSuccess()) {
+            // todo reset sessionId
+            request.getSession().invalidate();
             // set cookies
             Cookie cookie = new Cookie(tgcNameInCookie, authentication.getTicketGrantingTicket().getId());
             cookie.setPath(request.getContextPath());
@@ -92,7 +94,6 @@ public class AuthenticationController {
             response.addCookie(cookie);
             // put principal and authentication into session
             request.getSession().setAttribute(authNameInSession, authentication);
-            // todo reset sessionId
             // check service provider, redirect to the serviceProvider's home url.
             String spid = params.get(spidNameInParams);
             if (spid != null) {
@@ -115,8 +116,11 @@ public class AuthenticationController {
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         // delete tgc from cookies
         webUtils.deleteCookieByName(response, tgcNameInCookie);
-        // invalid session
+        // invalidate TGT
+        webUtils.invalidateTGT(request);
+        // invalidate session
         request.getSession().invalidate();
+        // send logout urls 
         // redirect to login page
         return "redirect:/login";
     }

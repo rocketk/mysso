@@ -6,5 +6,5 @@ import java.util.Map;
  * Created by pengyu on 2017/8/5.
  */
 public interface AttributeRepository {
-    Map<String, String> getAttributeById(String id);
+    Map<String, Object> getAttributeById(String id);
 }

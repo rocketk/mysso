@@ -15,5 +15,12 @@
     <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 
-    
+    <dependencies>
+        <!--<dependency>-->
+            <!--<groupId>com.alibaba</groupId>-->
+            <!--<artifactId>fastjson</artifactId>-->
+            <!--<version>${fastjson.version}</version>-->
+            <!--<classifier>sources</classifier>-->
+        <!--</dependency>-->
+    </dependencies>
 </project>

@@ -41,7 +41,7 @@ public class AttributedPrincipalResolver implements PrincipalResolver {
     @Override
     public Principal resolve(String credentialId) throws AuthenticationException {
         SimplePrincipal principal = new SimplePrincipal(credentialId);
-        Map<String, String> attributes = attributeRepository.getAttributeById(credentialId);
+        Map<String, Object> attributes = attributeRepository.getAttributeById(credentialId);
         principal.setAttributes(attributes);
         return principal;
     }
