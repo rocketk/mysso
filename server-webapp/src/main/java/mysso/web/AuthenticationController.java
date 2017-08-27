@@ -4,8 +4,11 @@ import mysso.authentication.Authentication;
 import mysso.authentication.AuthenticationManager;
 import mysso.authentication.credential.Credential;
 import mysso.authentication.credential.CredentialFactory;
+import mysso.protocol1.Constants;
 import mysso.serviceprovider.ServiceProvider;
 import mysso.serviceprovider.registry.ServiceProviderRegistry;
+import mysso.ticket.ServiceTicket;
+import mysso.ticket.TicketManager;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +34,9 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
 
     @NotNull
+    private TicketManager ticketManager;
+
+    @NotNull
     private ServiceProviderRegistry serviceProviderRegistry;
 
     @NotNull
@@ -46,19 +52,30 @@ public class AuthenticationController {
     public String login(HttpServletRequest request,
                         HttpServletResponse response,
                         @RequestParam Map<String, String> params) {
-        if (webUtils.isAuthenticated(request, response)) {
-            return "redirect:/home";
-        }
-        String spid = params.get("spid");
+        String spid = params.get(spidNameInParams);
+        ServiceProvider sp = null;
+        // 如果参数中有了spid, 并且这个spid不正确, 则返回warn页面以提示用户
         if (spid != null) {
-            ServiceProvider sp = serviceProviderRegistry.get(spid);
+            sp = serviceProviderRegistry.get(spid);
             if (sp == null) {
                 request.setAttribute("warning", "尚未接入的应用：" + spid);
                 return "warning";
-            } else {
-                request.setAttribute("serviceProvider", sp);
             }
         }
+        // 判断是否已登录
+        if (webUtils.isAuthenticated(request, response)) {
+            // 如果已登录, 则检查参数spid所表示的 service provider 是否正确
+            // 如果没问题, 则重定向到这个 service provider 的主页, 否则重定向到mysso的home页
+            if (sp != null) {
+                Authentication authentication = (Authentication) request.getSession().getAttribute(authNameInSession);
+                ServiceTicket st = ticketManager.grantServiceTicket(authentication.getTicketGrantingTicket(), spid);
+                return "redirect:" + appendParamToUrl(sp.getHomeUrl(), Constants.PARAM_SERVICE_TICKET, st.getId());
+            } else {
+                return "redirect:/home";
+            }
+        }
+        // 没有登录, 返回登录页面
+        request.setAttribute("spid", spid);
         return "login";
     }
 
@@ -81,10 +98,11 @@ public class AuthenticationController {
             if (spid != null) {
                 ServiceProvider sp = serviceProviderRegistry.get(spid);
                 if (sp != null && StringUtils.isNotBlank(sp.getHomeUrl())) {
-                    return "redirect:" + sp.getHomeUrl();
+                    ServiceTicket st = ticketManager.grantServiceTicket(authentication.getTicketGrantingTicket(), spid);
+                    return "redirect:" + appendParamToUrl(sp.getHomeUrl(), Constants.PARAM_SERVICE_TICKET, st.getId());
                 }
             }
-            // if the spid is empty, then return the success page
+            // if the spid is empty or invalid, then return the success page
             return "loginSuccess";
         } else {
             // put warning message into the ModelMap953720
@@ -103,12 +121,28 @@ public class AuthenticationController {
         return "redirect:/login";
     }
 
+    private String appendParamToUrl(String url, String name, String value) {
+        if (url != null && name != null && value != null) {
+            if (url.contains("?")) {
+                url = url + "&" + name + "=" + value;
+            } else {
+                url = url + "?" + name + "=" + value;
+            }
+            return url;
+        }
+        return "";
+    }
+
     public void setCredentialFactory(CredentialFactory credentialFactory) {
         this.credentialFactory = credentialFactory;
     }
 
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
+    }
+
+    public void setTicketManager(TicketManager ticketManager) {
+        this.ticketManager = ticketManager;
     }
 
     public void setServiceProviderRegistry(ServiceProviderRegistry serviceProviderRegistry) {

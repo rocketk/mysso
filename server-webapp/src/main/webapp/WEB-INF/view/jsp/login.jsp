@@ -18,6 +18,8 @@
     <span style="color: red;">${message}</span>
 </div>
 <form action="${ctx}/login" method="post">
+    <%--<c:if test="${serviceProvider != null}"--%>
+    <input type="hidden" name="spid" value="${spid}">
     username
     <input name="username"><br>
     password
