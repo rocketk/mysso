@@ -47,7 +47,8 @@ public class Constants {
     /*------------ SLO(single logout), begin ------------*/
     public static final String SLO_PARAM_TOKEN = "tk";
     public static final int SLO_CODE_SUCCESS = 200;
-    public static final int SLO_CODE_TOKEN_NONEXISTS = 301;
+    public static final int SLO_CODE_TOKEN_NONEXISTS = 201;
+    public static final int SLO_CODE_TOKEN_EMPTY = 301;
     public static final int SLO_CODE_ERROR = 500;
     /*------------ SLO(single logout), end ------------*/
 }
