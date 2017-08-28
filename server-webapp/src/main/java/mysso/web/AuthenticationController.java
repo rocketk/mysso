@@ -120,7 +120,8 @@ public class AuthenticationController {
         webUtils.invalidateTGT(request);
         // invalidate session
         request.getSession().invalidate();
-        // send logout urls 
+        // todo delete TGT
+        // send logout urls
         // redirect to login page
         return "redirect:/login";
     }

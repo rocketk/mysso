@@ -43,4 +43,11 @@ public class Constants {
     /** 用于校验 token 的相对路径 */
     public static final String VALIDATE_TK_URI = "/validate/tk";
     /*------------ uri, end ------------*/
+
+    /*------------ SLO(single logout), begin ------------*/
+    public static final String SLO_PARAM_TOKEN = "tk";
+    public static final int SLO_CODE_SUCCESS = 200;
+    public static final int SLO_CODE_TOKEN_NONEXISTS = 301;
+    public static final int SLO_CODE_ERROR = 500;
+    /*------------ SLO(single logout), end ------------*/
 }
