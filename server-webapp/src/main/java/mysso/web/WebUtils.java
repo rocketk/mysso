@@ -1,6 +1,7 @@
 package mysso.web;
 
 import mysso.authentication.Authentication;
+import mysso.ticket.TicketGrantingTicket;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.Cookie;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpSession;
 public class WebUtils {
     private String tgcNameInCookie;
     private String authNameInSession;
+
     public boolean isAuthenticated(HttpServletRequest request, HttpServletResponse response) {
         // check tgc from cookies
         Cookie tgc = extractCookieByName(request, tgcNameInCookie);
@@ -29,7 +31,8 @@ public class WebUtils {
         }
         Authentication authentication = (Authentication) authenticationObj;
         // tgtId from cookies have to equal to the one from session
-        if (StringUtils.equals(tgtId, authentication.getTicketGrantingTicket().getId())) {
+        TicketGrantingTicket tgt = authentication.getTicketGrantingTicket();
+        if (StringUtils.equals(tgtId, tgt.getId()) && !tgt.isExpired()) {
             return true;
         }
         deleteCookieByName(response, tgc.getName());
@@ -40,7 +43,7 @@ public class WebUtils {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if(name.equals(cookie.getName())){
+                if (name.equals(cookie.getName())) {
                     return cookie;
                 }
             }

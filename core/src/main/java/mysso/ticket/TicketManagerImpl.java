@@ -101,6 +101,13 @@ public class TicketManagerImpl implements TicketManager {
         }
         if (st.isExpired()) {
             return new TicketValidateResult(Constants.EXPIRED_ST, "the st has been expired", null);
+        } else {
+            TicketGrantingTicket tgt = ticketRegistry.get(st.getTicketGrantingTicketId(), TicketGrantingTicket.class);
+            if (tgt == null) {
+                return new TicketValidateResult(Constants.EXPIRED_TGT, "the tgt has been expired", null);
+            } else if (tgt.isExpired()) {
+                return new TicketValidateResult(Constants.INVALID_TGT, "the tgt is invalid", null);
+            }
         }
         return new TicketValidateResult(Constants.VALID_TICKET, "valid st", grantToken(st));
     }
@@ -125,8 +132,14 @@ public class TicketManagerImpl implements TicketManager {
             ticketRegistry.add(newToken);
             return new TicketValidateResult(Constants.VALID_BUT_EXPIRED, "token is valid but expired", newToken);
         } else {
-            return new TicketValidateResult(Constants.VALID_TICKET, "valid token", tk);
+            TicketGrantingTicket tgt = ticketRegistry.get(tk.getTicketGrantingTicketId(), TicketGrantingTicket.class);
+            if (tgt == null) {
+                return new TicketValidateResult(Constants.EXPIRED_TGT, "the tgt has been expired", null);
+            } else if (tgt.isExpired()) {
+                return new TicketValidateResult(Constants.INVALID_TGT, "the tgt is invalid", null);
+            }
         }
+        return new TicketValidateResult(Constants.VALID_TICKET, "valid token", tk);
     }
 
     @Override

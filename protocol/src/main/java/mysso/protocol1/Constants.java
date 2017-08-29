@@ -16,6 +16,10 @@ public class Constants {
     public static final int EXPIRED_ST = 302;
     /** token 不正确，客户端应阻止登录，并且引导用户到mysso服务端重新认证 */
     public static final int INVALID_TK = 311;
+    /** ticket granting ticket 过期，客户端应阻止登录，并且引导用户到mysso服务端重新认证 */
+    public static final int EXPIRED_TGT = 321;
+    /** ticket granting ticket 不正确，客户端应阻止登录，并且引导用户到mysso服务端重新认证 */
+    public static final int INVALID_TGT = 322;
     /** spid 不正确，客户端应阻止登录，并且给予用户适当提示 */
     public static final int INVALID_SPID = 401;
     /** spid 与所要校验的 ticket 不匹配，客户端应阻止登录，并且给予用户适当提示 */
