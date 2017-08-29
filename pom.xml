@@ -12,6 +12,7 @@
         <module>core</module>
         <module>server-webapp</module>
         <module>protocol</module>
+        <module>supports-redis</module>
     </modules>
     <properties>
         <project.build.sourceVersion>1.7</project.build.sourceVersion>
@@ -27,6 +28,7 @@
         <junit.version>4.12</junit.version>
         <commons.lang.version>3.6</commons.lang.version>
         <commons.collections.version>4.1</commons.collections.version>
+        <commons.beanutils.version>1.9.3</commons.beanutils.version>
         <javax.validation.version>1.1.0.Final</javax.validation.version>
         <fastjson.version>1.2.36</fastjson.version>
         <mockito.version>2.8.47</mockito.version>
