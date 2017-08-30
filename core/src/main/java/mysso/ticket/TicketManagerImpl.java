@@ -123,7 +123,14 @@ public class TicketManagerImpl implements TicketManager {
         if (!spId.equals(tk.getServiceProviderId())) {
             return new TicketValidateResult(Constants.MISMATCH_SPID, "the given spid does not match the token's spid", null);
         }
-        // tk存在, 并且未过期, 并且确实由指定的ServiceProvider所签发, 则校验成功
+        // tk存在，并且spid正确，校验tgt
+        TicketGrantingTicket tgt = ticketRegistry.get(tk.getTicketGrantingTicketId(), TicketGrantingTicket.class);
+        if (tgt == null) {
+            return new TicketValidateResult(Constants.EXPIRED_TGT, "the tgt has been expired", null);
+        } else if (tgt.isExpired()) {
+            return new TicketValidateResult(Constants.INVALID_TGT, "the tgt is invalid", null);
+        }
+        // tgt正常，判断tk是否过期
         if (tk.isExpired()) {
             long now = System.currentTimeMillis();
             Token newToken = new Token(tokenIdGenerator.getNewId(), now, tk.getCredentialId(),
@@ -131,13 +138,6 @@ public class TicketManagerImpl implements TicketManager {
             ticketRegistry.delete(tk.getId(), Token.class);
             ticketRegistry.add(newToken);
             return new TicketValidateResult(Constants.VALID_BUT_EXPIRED, "token is valid but expired", newToken);
-        } else {
-            TicketGrantingTicket tgt = ticketRegistry.get(tk.getTicketGrantingTicketId(), TicketGrantingTicket.class);
-            if (tgt == null) {
-                return new TicketValidateResult(Constants.EXPIRED_TGT, "the tgt has been expired", null);
-            } else if (tgt.isExpired()) {
-                return new TicketValidateResult(Constants.INVALID_TGT, "the tgt is invalid", null);
-            }
         }
         return new TicketValidateResult(Constants.VALID_TICKET, "valid token", tk);
     }

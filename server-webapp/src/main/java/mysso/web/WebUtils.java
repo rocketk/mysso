@@ -26,7 +26,7 @@ public class WebUtils {
         // check authentication from session
         Object authenticationObj = request.getSession().getAttribute(authNameInSession);
         if (authenticationObj == null) {
-            deleteCookieByName(response, tgc.getName());
+//            deleteCookieByName(response, tgc.getName());
             return false;
         }
         Authentication authentication = (Authentication) authenticationObj;
@@ -35,7 +35,7 @@ public class WebUtils {
         if (StringUtils.equals(tgtId, tgt.getId()) && !tgt.isExpired()) {
             return true;
         }
-        deleteCookieByName(response, tgc.getName());
+//        deleteCookieByName(response, tgc.getName());
         return false;
     }
 

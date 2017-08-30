@@ -114,6 +114,7 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // 通知全部客户端登出
         // delete tgc from cookies
         webUtils.deleteCookieByName(response, tgcNameInCookie);
         // invalidate TGT
