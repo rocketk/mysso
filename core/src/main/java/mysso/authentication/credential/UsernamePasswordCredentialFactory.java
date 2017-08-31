@@ -1,6 +1,6 @@
 package mysso.authentication.credential;
 
-import org.springframework.util.Assert;
+import org.apache.commons.lang3.Validate;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ public class UsernamePasswordCredentialFactory implements CredentialFactory {
     private String keyForPassword = "password";
     @Override
     public Credential createCredential(Map<String, String> params) {
-        Assert.notNull(params);
+        Validate.notNull(params);
         Object username = params.get(keyForUsername);
         Object password = params.get(keyForPassword);
         Credential credential = new UsernamePasswordCredential(

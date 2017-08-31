@@ -1,12 +1,9 @@
 package mysso.authentication.principal;
 
-import mysso.authentication.credential.UsernamePasswordCredential;
 import mysso.authentication.credential.Credential;
 import mysso.authentication.exception.AuthenticationException;
-import mysso.authentication.exception.CredentialNotSupportedException;
-import org.springframework.util.Assert;
+import org.apache.commons.lang3.Validate;
 
-import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
@@ -14,18 +11,18 @@ import java.util.Map;
  */
 public class AttributedPrincipalResolver implements PrincipalResolver {
 
-    @NotNull
+
     private AttributeRepository attributeRepository;
 
 //    @Override
 //    public boolean supports(Credential credential) {
-//        Assert.notNull(credential);
+//        Validate.notNull(credential);
 //        return credential instanceof UsernamePasswordCredential;
 //    }
 
     @Override
     public Principal resolve(Credential credential) throws AuthenticationException {
-        Assert.notNull(credential);
+        Validate.notNull(credential);
         return resolve(credential.getId());
 //        if (!supports(credential)) {
 //            throw new CredentialNotSupportedException(String.format("the credential %s is not supported by this principal resolver %s",

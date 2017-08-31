@@ -1,8 +1,7 @@
 package mysso.authentication.principal;
 
-import org.springframework.util.Assert;
+import org.apache.commons.lang3.Validate;
 
-import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
@@ -11,13 +10,13 @@ import java.util.Map;
 public class SimplePrincipalFactory implements PrincipalFactory {
     @Override
     public Principal createPrincipal(String id) {
-        Assert.notNull(id);
+        Validate.notNull(id);
         return createPrincipal(id, null);
     }
 
     @Override
     public Principal createPrincipal(String id, Map<String, Object> attributes) {
-        Assert.notNull(id);
+        Validate.notNull(id);
         return new SimplePrincipal(id, attributes);
     }
 

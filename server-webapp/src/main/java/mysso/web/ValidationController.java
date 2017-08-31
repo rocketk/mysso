@@ -3,18 +3,18 @@ package mysso.web;
 import mysso.authentication.principal.Principal;
 import mysso.authentication.principal.PrincipalResolver;
 import mysso.protocol1.Constants;
+import mysso.protocol1.dto.AssertionDto;
 import mysso.protocol1.dto.PrincipalDto;
 import mysso.serviceprovider.ServiceProvider;
 import mysso.serviceprovider.registry.ServiceProviderRegistry;
 import mysso.ticket.TicketManager;
 import mysso.ticket.TicketValidateResult;
 import mysso.ticket.Token;
-import mysso.protocol1.dto.AssertionDto;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -47,7 +47,7 @@ public class ValidationController {
             return new AssertionDto(Constants.INVALID_SPID, "invalid spid");
         }
         // validate the secret key of sp
-        Assert.notNull(serviceProvider.getSecretKey(),
+        Validate.notNull(serviceProvider.getSecretKey(),
                 "the secret key of serviceProvider is null, spid " + spid);
         if (!serviceProvider.getSecretKey().equals(secretKey)) {
             return new AssertionDto(Constants.INVALID_SPKEY, "invalid secret key");

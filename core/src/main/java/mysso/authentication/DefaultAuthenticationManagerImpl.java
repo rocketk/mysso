@@ -8,11 +8,10 @@ import mysso.authentication.principal.Principal;
 import mysso.authentication.principal.PrincipalResolver;
 import mysso.ticket.TicketGrantingTicket;
 import mysso.ticket.TicketManager;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -21,18 +20,16 @@ import java.util.HashMap;
  */
 public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
     private Logger log = LoggerFactory.getLogger(getClass());
-    @NotNull
+
     private AuthenticationHandler authenticationHandler;
 
-    @NotNull
     private PrincipalResolver principalResolver;
 
-    @NotNull
     private TicketManager ticketManager;
 
     @Override
     public Authentication authenticate(Credential credential) {
-        Assert.notNull(credential, "credential is null");
+        Validate.notNull(credential, "credential is null");
         try {
             HandlerResult result = authenticationHandler.authenticate(credential);
             if (result.isSuccess()) {

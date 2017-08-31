@@ -5,22 +5,21 @@ import mysso.authentication.credential.Credential;
 import mysso.protocol1.Constants;
 import mysso.ticket.registry.TicketRegistry;
 import mysso.util.UniqueIdGenerator;
-import org.springframework.util.Assert;
+import org.apache.commons.lang3.Validate;
 
-import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 
 /**
  * Created by pengyu on 2017/8/14.
  */
 public class TicketManagerImpl implements TicketManager {
-    @NotNull
+
     private TicketRegistry ticketRegistry;
-    @NotNull
+
     private UniqueIdGenerator ticketGrantingTicketIdGenerator;
-    @NotNull
+
     private UniqueIdGenerator serviceTicketIdGenerator;
-    @NotNull
+
     private UniqueIdGenerator tokenIdGenerator;
     /**
      * living time for service ticket in millisecond.
@@ -58,9 +57,9 @@ public class TicketManagerImpl implements TicketManager {
 
     @Override
     public ServiceTicket grantServiceTicket(TicketGrantingTicket tgt, String spId) {
-        Assert.notNull(tgt);
-        Assert.notNull(spId);
-        Assert.isTrue(!tgt.isExpired(), "tgt 已过期");
+        Validate.notNull(tgt);
+        Validate.notNull(spId);
+        Validate.isTrue(!tgt.isExpired(), "tgt 已过期");
         long now = System.currentTimeMillis();
         ServiceTicket st = new ServiceTicket(serviceTicketIdGenerator.getNewId(), now, tgt.getCredentialId(),
                 tgt.getId(), spId, now + livingTimeForServiceTicket);
@@ -75,7 +74,7 @@ public class TicketManagerImpl implements TicketManager {
 
     @Override
     public Token grantToken(ServiceTicket st) {
-        Assert.notNull(st);
+        Validate.notNull(st);
         long now = System.currentTimeMillis();
         Token tk = new Token(tokenIdGenerator.getNewId(), now, st.getCredentialId(),
                 st.getTicketGrantingTicketId(), st.getServiceProviderId(), now + livingTimeForToken);
@@ -90,8 +89,8 @@ public class TicketManagerImpl implements TicketManager {
 
     @Override
     public TicketValidateResult validateServiceTicket(String stId, String spId) {
-        Assert.notNull(stId);
-        Assert.notNull(spId);
+        Validate.notNull(stId);
+        Validate.notNull(spId);
         ServiceTicket st = ticketRegistry.get(stId, ServiceTicket.class);
         if (st == null) {
             return new TicketValidateResult(Constants.INVALID_ST, "invalid service ticket", null);
@@ -114,8 +113,8 @@ public class TicketManagerImpl implements TicketManager {
 
     @Override
     public TicketValidateResult validateToken(String tkId, String spId) {
-        Assert.notNull(tkId);
-        Assert.notNull(spId);
+        Validate.notNull(tkId);
+        Validate.notNull(spId);
         Token tk = ticketRegistry.get(tkId, Token.class);
         if (tk == null) {
             return new TicketValidateResult(Constants.INVALID_TK, "invalid token", null);

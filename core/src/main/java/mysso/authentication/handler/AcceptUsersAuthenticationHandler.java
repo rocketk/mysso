@@ -1,14 +1,13 @@
 package mysso.authentication.handler;
 
-import mysso.authentication.credential.UsernamePasswordCredential;
 import mysso.authentication.credential.Credential;
+import mysso.authentication.credential.UsernamePasswordCredential;
 import mysso.authentication.exception.CredentialNotSupportedException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
-import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
@@ -18,20 +17,20 @@ public class AcceptUsersAuthenticationHandler implements AuthenticationHandler {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    @NotNull
+
     private PasswordEncoder passwordEncoder;
-    @NotNull
+
     private Map<String, String> users;
 
     @Override
     public boolean supports(Credential credential) {
-        Assert.notNull(credential);
+        Validate.notNull(credential);
         return credential instanceof UsernamePasswordCredential;
     }
 
     @Override
     public HandlerResult authenticate(Credential credential) {
-        Assert.notNull(credential);
+        Validate.notNull(credential);
         if (!supports(credential)) {
             log.error("the credential {} is not supported by the handler {}",
                     credential.getClass().getSimpleName(), this.getClass().getSimpleName());

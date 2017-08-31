@@ -2,11 +2,10 @@ package mysso.ticket.registry;
 
 import mysso.ticket.*;
 import mysso.ticket.exception.DuplicateIdException;
-import mysso.ticket.exception.TicketException;
 import mysso.ticket.exception.TicketIdNotExistsException;
 import mysso.ticket.exception.UnsupportTicketTypeException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.Assert;
+import org.apache.commons.lang3.Validate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +20,7 @@ public class InMemoryTicketRegistry implements TicketRegistry {
 
     @Override
     public void add(AbstractTicket ticket) {
-        Assert.notNull(ticket, "ticket should not be null");
+        Validate.notNull(ticket, "ticket should not be null");
         Map ticketMap;
         if (ticket instanceof TicketGrantingTicket) {
             ticketMap = tgtMap;
@@ -40,7 +39,7 @@ public class InMemoryTicketRegistry implements TicketRegistry {
 
     @Override
     public void update(AbstractTicket ticket) {
-        Assert.notNull(ticket, "ticket should not be null");
+        Validate.notNull(ticket, "ticket should not be null");
         Map ticketMap;
         if (ticket instanceof TicketGrantingTicket) {
             ticketMap = tgtMap;
@@ -60,8 +59,8 @@ public class InMemoryTicketRegistry implements TicketRegistry {
 
     @Override
     public boolean delete(String id, Class<? extends AbstractTicket> clazz) {
-        Assert.notNull(id, "id should not be null");
-        Assert.notNull(clazz, "clazz should not be null");
+        Validate.notNull(id, "id should not be null");
+        Validate.notNull(clazz, "clazz should not be null");
         if (StringUtils.equals(TicketGrantingTicket.class.getCanonicalName(), clazz.getCanonicalName())) {
             deleteChildren(tgtMap.get(id));
             if (tgtMap.remove(id) != null) {
@@ -125,8 +124,8 @@ public class InMemoryTicketRegistry implements TicketRegistry {
 
     @Override
     public <T extends AbstractTicket> T get(String id, Class<T> clazz) {
-        Assert.notNull(id, "id should not be null");
-        Assert.notNull(clazz, "clazz should not be null");
+        Validate.notNull(id, "id should not be null");
+        Validate.notNull(clazz, "clazz should not be null");
         Map ticketMap;
         if (StringUtils.equals(TicketGrantingTicket.class.getCanonicalName(), clazz.getCanonicalName())) {
             ticketMap = tgtMap;
@@ -142,7 +141,7 @@ public class InMemoryTicketRegistry implements TicketRegistry {
 
     @Override
     public <T extends AbstractTicket> Map<String, T> getAll(Class<T> clazz) {
-        Assert.notNull(clazz, "clazz should not be null");
+        Validate.notNull(clazz, "clazz should not be null");
         Map ticketMap;
         if (StringUtils.equals(TicketGrantingTicket.class.getCanonicalName(), clazz.getCanonicalName())) {
             ticketMap = tgtMap;
