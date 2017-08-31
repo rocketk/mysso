@@ -2,10 +2,10 @@
 <%@ include file="includes/tags.jsp" %>
 <html>
 <head>
-    <title>登录成功</title>
+    <title>logout successfully</title>
 </head>
 <body>
-<p>登录成功 </p>
+<p>logout successfully! </p>
 <a href="${ctx}/home">home</a>
 </body>
 </html>

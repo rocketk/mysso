@@ -44,6 +44,7 @@
         <property name="credentialFactory" ref="credentialFactory"/>
         <property name="serviceProviderRegistry" ref="serviceProviderRegistry"/>
         <property name="webUtils" ref="webUtils"/>
+        <property name="logoutManager" ref="logoutManager"/>
         <property name="authNameInSession" value="authentication"/>
         <property name="spidNameInParams" value="${spidNameInParams}"/>
         <property name="tgcNameInCookie" value="${tgcNameInCookie}"/>
@@ -57,6 +58,7 @@
         <property name="tgcNameInCookie" value="${tgcNameInCookie}"/>
     </bean>
     <bean class="mysso.web.HomeController">
+        <property name="serviceProviderRegistry" ref="serviceProviderRegistry"/>
     </bean>
     <bean class="mysso.web.ValidationController">
         <property name="principalResolver" ref="principalResolver"/>

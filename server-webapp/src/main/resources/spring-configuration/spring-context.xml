@@ -90,6 +90,9 @@
         <entry key="level" value="m1"/>
     </util:map>
 
+    <bean id="logoutManager" class="mysso.logout.DefaultLogoutManagerImpl">
+    </bean>
+
     <!-- filters -->
     <bean id="characterEncodingFilter" class="org.springframework.web.filter.CharacterEncodingFilter">
         <property name="encoding" value="UTF-8"/>

@@ -123,7 +123,7 @@ public class AuthenticationController {
         // 已经经过了拦截器的校验，因此 authentication 和 ticketGrantingTicket 都不可能是 null
         LogoutResult logoutResult = logoutManager.logoutServicesByTGT(authentication.getTicketGrantingTicket().getId());
         request.setAttribute("logoutResult", logoutResult);
-        if (logoutResult.isAllSuccess()) {
+        if (logoutResult != null && logoutResult.isAllSuccess()) {
             // destroy session
             logoutServerSideOnly(request, response);
             // redirect to success page
@@ -148,10 +148,11 @@ public class AuthenticationController {
     /**
      * 直接在服务端执行登出操作，而不通知各个客户端应用，
      * 此方法通常用在有些客户端未能执行登出操作（可能因为其已经宕机），
+     *
      * @param request
      * @param response
      */
-    private void logoutServerSideOnly(HttpServletRequest request, HttpServletResponse response){
+    private void logoutServerSideOnly(HttpServletRequest request, HttpServletResponse response) {
         TicketGrantingTicket ticketGrantingTicket = webUtils.destroySession(request, response);
         if (ticketGrantingTicket != null) {
             // 彻底删除 ticketGrantingTicket ，以及其所关联的 serviceTicket 以及 token
@@ -189,5 +190,9 @@ public class AuthenticationController {
 
     public void setSpidNameInParams(String spidNameInParams) {
         this.spidNameInParams = spidNameInParams;
+    }
+
+    public void setLogoutManager(LogoutManager logoutManager) {
+        this.logoutManager = logoutManager;
     }
 }

@@ -15,6 +15,6 @@ public class DefaultLogoutManagerImpl implements LogoutManager {
     @Override
     public LogoutResult logoutServicesByTGT(String tgtId) {
 
-        return null;
+        return new LogoutResult();
     }
 }
