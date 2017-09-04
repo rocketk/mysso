@@ -1,13 +1,14 @@
 package mysso.logout;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by pengyu on 2017/8/28.
  */
 // todo
 public interface LogoutManager {
-    LogoutResult logoutServicesByTokens(List<String> tokenIds);
+
+    LogoutResult logoutServicesByTokens(Set<String> tokenIds);
 
     /**
      * 通过tgt找到其所授权的token，根据这些token的ServiceProvider找出它们的接收登出地址；

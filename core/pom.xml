@@ -26,6 +26,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons.lang.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
+        </dependency>
         <!--<dependency>-->
             <!--<groupId>javax.validation</groupId>-->
             <!--<artifactId>validation-api</artifactId>-->
@@ -71,6 +76,13 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!--fastjson-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+            <!--<classifier>sources</classifier>-->
         </dependency>
     </dependencies>
 

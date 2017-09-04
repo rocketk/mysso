@@ -9,7 +9,6 @@ import mysso.ticket.Token;
 public class LogoutServiceInstance {
     private ServiceProvider serviceProvider;
     private Token token;
-    private String ip;
     private String logoutUrl;
     private String message;
 
@@ -27,14 +26,6 @@ public class LogoutServiceInstance {
 
     public void setToken(Token token) {
         this.token = token;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
     }
 
     public String getLogoutUrl() {

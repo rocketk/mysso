@@ -49,7 +49,7 @@
                     如果客户端应用是集群，并且客户端集群已经做好了session共享，此处可以填负载均衡地址，
                     如果客户端应用是集群，但是没有做session共享，那么这里要填写每一个实例的地址（ip地址），
                     而不允许填写负载均衡地址-->
-                <property name="logoutUrls" value="http://127.0.0.1:9080/demo/logout"/>
+                <property name="logoutUrls" value="http://127.0.0.1:9080/demo/backChannelLogout"/>
                 <property name="secretKey" value="anyRandomSecretKey"/>
             </bean>
         </entry>
@@ -91,6 +91,12 @@
     </util:map>
 
     <bean id="logoutManager" class="mysso.logout.DefaultLogoutManagerImpl">
+        <property name="logoutHandler" ref="logoutHandler"/>
+        <property name="serviceProviderRegistry" ref="serviceProviderRegistry"/>
+        <property name="ticketRegistry" ref="ticketRegistry"/>
+    </bean>
+
+    <bean id="logoutHandler" class="mysso.logout.HttpLogoutHandler">
     </bean>
 
     <!-- filters -->
