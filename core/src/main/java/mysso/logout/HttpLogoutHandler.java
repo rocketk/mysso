@@ -41,7 +41,7 @@ public class HttpLogoutHandler implements LogoutHandler {
             response = httpclient.execute(httpPost);
             log.trace("received response, status: {}", response.getStatusLine().getStatusCode());
             if (response.getStatusLine().getStatusCode() != 200) {
-                log.trace("client-side error");
+                log.error("client-side error");
                 LogoutResultDto logoutResultDto = new LogoutResultDto();
                 logoutResultDto.setCode(Constants.SLO_CODE_ERROR);
                 logoutResultDto.setMessage("client-side error");
