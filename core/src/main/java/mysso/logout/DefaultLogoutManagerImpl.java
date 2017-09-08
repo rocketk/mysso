@@ -95,8 +95,7 @@ public class DefaultLogoutManagerImpl implements LogoutManager {
     public LogoutResult logoutServicesByTGT(String tgtId) {
         final TicketGrantingTicket tgt = ticketRegistry.get(tgtId, TicketGrantingTicket.class);
         final Set<String> tokenIds = tgt.getTokenIds();
-        logoutServicesByTokens(tokenIds);
-        return new LogoutResult();
+        return logoutServicesByTokens(tokenIds);
     }
 
     public void setLogoutHandler(LogoutHandler logoutHandler) {
