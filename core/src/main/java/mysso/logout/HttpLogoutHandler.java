@@ -39,7 +39,14 @@ public class HttpLogoutHandler implements LogoutHandler {
             log.trace("sending logout request to service client, logout url: {}, tokenId: {}",
                     url, token);
             response = httpclient.execute(httpPost);
-            log.trace("received ticket validation response, status: {}", response.getStatusLine().getStatusCode());
+            log.trace("received response, status: {}", response.getStatusLine().getStatusCode());
+            if (response.getStatusLine().getStatusCode() != 200) {
+                log.trace("client-side error");
+                LogoutResultDto logoutResultDto = new LogoutResultDto();
+                logoutResultDto.setCode(Constants.SLO_CODE_ERROR);
+                logoutResultDto.setMessage("client-side error");
+                return logoutResultDto;
+            }
             HttpEntity entity = response.getEntity();
             InputStream contentStream = entity.getContent();
             log.trace("reading input stream of response to a string");
