@@ -12,5 +12,8 @@
         <logger name="mysso" level="TRACE" additivity="false">
             <AppenderRef ref="Console"/>
         </logger>
+        <logger name="org" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+        </logger>
     </Loggers>
 </Configuration>

@@ -5,22 +5,21 @@ import mysso.authentication.credential.Credential;
 import mysso.protocol1.Constants;
 import mysso.ticket.registry.TicketRegistry;
 import mysso.util.UniqueIdGenerator;
-import org.springframework.util.Assert;
+import org.apache.commons.lang3.Validate;
 
-import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 
 /**
  * Created by pengyu on 2017/8/14.
  */
 public class TicketManagerImpl implements TicketManager {
-    @NotNull
+
     private TicketRegistry ticketRegistry;
-    @NotNull
+
     private UniqueIdGenerator ticketGrantingTicketIdGenerator;
-    @NotNull
+
     private UniqueIdGenerator serviceTicketIdGenerator;
-    @NotNull
+
     private UniqueIdGenerator tokenIdGenerator;
     /**
      * living time for service ticket in millisecond.
@@ -58,9 +57,9 @@ public class TicketManagerImpl implements TicketManager {
 
     @Override
     public ServiceTicket grantServiceTicket(TicketGrantingTicket tgt, String spId) {
-        Assert.notNull(tgt);
-        Assert.notNull(spId);
-        Assert.isTrue(!tgt.isExpired(), "tgt 已过期");
+        Validate.notNull(tgt);
+        Validate.notNull(spId);
+        Validate.isTrue(!tgt.isExpired(), "tgt 已过期");
         long now = System.currentTimeMillis();
         ServiceTicket st = new ServiceTicket(serviceTicketIdGenerator.getNewId(), now, tgt.getCredentialId(),
                 tgt.getId(), spId, now + livingTimeForServiceTicket);
@@ -75,7 +74,7 @@ public class TicketManagerImpl implements TicketManager {
 
     @Override
     public Token grantToken(ServiceTicket st) {
-        Assert.notNull(st);
+        Validate.notNull(st);
         long now = System.currentTimeMillis();
         Token tk = new Token(tokenIdGenerator.getNewId(), now, st.getCredentialId(),
                 st.getTicketGrantingTicketId(), st.getServiceProviderId(), now + livingTimeForToken);
@@ -90,8 +89,8 @@ public class TicketManagerImpl implements TicketManager {
 
     @Override
     public TicketValidateResult validateServiceTicket(String stId, String spId) {
-        Assert.notNull(stId);
-        Assert.notNull(spId);
+        Validate.notNull(stId);
+        Validate.notNull(spId);
         ServiceTicket st = ticketRegistry.get(stId, ServiceTicket.class);
         if (st == null) {
             return new TicketValidateResult(Constants.INVALID_ST, "invalid service ticket", null);
@@ -114,8 +113,8 @@ public class TicketManagerImpl implements TicketManager {
 
     @Override
     public TicketValidateResult validateToken(String tkId, String spId) {
-        Assert.notNull(tkId);
-        Assert.notNull(spId);
+        Validate.notNull(tkId);
+        Validate.notNull(spId);
         Token tk = ticketRegistry.get(tkId, Token.class);
         if (tk == null) {
             return new TicketValidateResult(Constants.INVALID_TK, "invalid token", null);
@@ -123,7 +122,14 @@ public class TicketManagerImpl implements TicketManager {
         if (!spId.equals(tk.getServiceProviderId())) {
             return new TicketValidateResult(Constants.MISMATCH_SPID, "the given spid does not match the token's spid", null);
         }
-        // tk存在, 并且未过期, 并且确实由指定的ServiceProvider所签发, 则校验成功
+        // tk存在，并且spid正确，校验tgt
+        TicketGrantingTicket tgt = ticketRegistry.get(tk.getTicketGrantingTicketId(), TicketGrantingTicket.class);
+        if (tgt == null) {
+            return new TicketValidateResult(Constants.EXPIRED_TGT, "the tgt has been expired", null);
+        } else if (tgt.isExpired()) {
+            return new TicketValidateResult(Constants.INVALID_TGT, "the tgt is invalid", null);
+        }
+        // tgt正常，判断tk是否过期
         if (tk.isExpired()) {
             long now = System.currentTimeMillis();
             Token newToken = new Token(tokenIdGenerator.getNewId(), now, tk.getCredentialId(),
@@ -131,13 +137,6 @@ public class TicketManagerImpl implements TicketManager {
             ticketRegistry.delete(tk.getId(), Token.class);
             ticketRegistry.add(newToken);
             return new TicketValidateResult(Constants.VALID_BUT_EXPIRED, "token is valid but expired", newToken);
-        } else {
-            TicketGrantingTicket tgt = ticketRegistry.get(tk.getTicketGrantingTicketId(), TicketGrantingTicket.class);
-            if (tgt == null) {
-                return new TicketValidateResult(Constants.EXPIRED_TGT, "the tgt has been expired", null);
-            } else if (tgt.isExpired()) {
-                return new TicketValidateResult(Constants.INVALID_TGT, "the tgt is invalid", null);
-            }
         }
         return new TicketValidateResult(Constants.VALID_TICKET, "valid token", tk);
     }

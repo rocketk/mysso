@@ -4,10 +4,13 @@ import mysso.authentication.Authentication;
 import mysso.authentication.AuthenticationManager;
 import mysso.authentication.credential.Credential;
 import mysso.authentication.credential.CredentialFactory;
+import mysso.logout.LogoutManager;
+import mysso.logout.LogoutResult;
 import mysso.protocol1.Constants;
 import mysso.serviceprovider.ServiceProvider;
 import mysso.serviceprovider.registry.ServiceProviderRegistry;
 import mysso.ticket.ServiceTicket;
+import mysso.ticket.TicketGrantingTicket;
 import mysso.ticket.TicketManager;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -18,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
@@ -27,19 +29,16 @@ import java.util.Map;
 @Controller
 public class AuthenticationController {
 
-    @NotNull
     private CredentialFactory credentialFactory;
 
-    @NotNull
     private AuthenticationManager authenticationManager;
 
-    @NotNull
     private TicketManager ticketManager;
 
-    @NotNull
+    private LogoutManager logoutManager;
+
     private ServiceProviderRegistry serviceProviderRegistry;
 
-    @NotNull
     private WebUtils webUtils;
 
     private String authNameInSession;
@@ -113,17 +112,25 @@ public class AuthenticationController {
     }
 
     @RequestMapping(value = "/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        // delete tgc from cookies
-        webUtils.deleteCookieByName(response, tgcNameInCookie);
-        // invalidate TGT
-        webUtils.invalidateTGT(request);
-        // invalidate session
-        request.getSession().invalidate();
-        // todo delete TGT
-        // send logout urls
-        // redirect to login page
-        return "redirect:/login";
+    public String logout(HttpServletRequest request, HttpServletResponse response,
+                         @RequestParam(value = "force", required = false, defaultValue = "false") String force) {
+        if (force != null && "true".equals(force)) {
+            logoutServerSideOnly(request, response);
+            return "logoutSuccess";
+        }
+        Authentication authentication = webUtils.getAuthenticationFromSession(request);
+        // 通知全部客户端登出
+        // 已经经过了拦截器的校验，因此 authentication 和 ticketGrantingTicket 都不可能是 null
+        LogoutResult logoutResult = logoutManager.logoutServicesByTGT(authentication.getTicketGrantingTicket().getId());
+        request.setAttribute("logoutResult", logoutResult);
+        if (logoutResult != null && logoutResult.isAllSuccess()) {
+            // destroy session
+            logoutServerSideOnly(request, response);
+            // redirect to success page
+            return "logoutSuccess";
+        } else {
+            return "logoutFailure";
+        }
     }
 
     private String appendParamToUrl(String url, String name, String value) {
@@ -136,6 +143,21 @@ public class AuthenticationController {
             return url;
         }
         return "";
+    }
+
+    /**
+     * 直接在服务端执行登出操作，而不通知各个客户端应用，
+     * 此方法通常用在有些客户端未能执行登出操作（可能因为其已经宕机），
+     *
+     * @param request
+     * @param response
+     */
+    private void logoutServerSideOnly(HttpServletRequest request, HttpServletResponse response) {
+        TicketGrantingTicket ticketGrantingTicket = webUtils.destroySession(request, response);
+        if (ticketGrantingTicket != null) {
+            // 彻底删除 ticketGrantingTicket ，以及其所关联的 serviceTicket 以及 token
+            ticketManager.destroyTicketGrantingTicket(ticketGrantingTicket.getId());
+        }
     }
 
     public void setCredentialFactory(CredentialFactory credentialFactory) {
@@ -168,5 +190,9 @@ public class AuthenticationController {
 
     public void setSpidNameInParams(String spidNameInParams) {
         this.spidNameInParams = spidNameInParams;
+    }
+
+    public void setLogoutManager(LogoutManager logoutManager) {
+        this.logoutManager = logoutManager;
     }
 }

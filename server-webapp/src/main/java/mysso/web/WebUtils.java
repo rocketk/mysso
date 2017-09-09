@@ -26,7 +26,7 @@ public class WebUtils {
         // check authentication from session
         Object authenticationObj = request.getSession().getAttribute(authNameInSession);
         if (authenticationObj == null) {
-            deleteCookieByName(response, tgc.getName());
+//            deleteCookieByName(response, tgc.getName());
             return false;
         }
         Authentication authentication = (Authentication) authenticationObj;
@@ -35,8 +35,16 @@ public class WebUtils {
         if (StringUtils.equals(tgtId, tgt.getId()) && !tgt.isExpired()) {
             return true;
         }
-        deleteCookieByName(response, tgc.getName());
+//        deleteCookieByName(response, tgc.getName());
         return false;
+    }
+
+    public Authentication getAuthenticationFromSession(HttpServletRequest request){
+        Object authenticationObj = request.getSession().getAttribute(authNameInSession);
+        if (authenticationObj == null) {
+            return null;
+        }
+        return (Authentication) authenticationObj;
     }
 
     public Cookie extractCookieByName(HttpServletRequest request, String name) {
@@ -57,12 +65,39 @@ public class WebUtils {
         response.addCookie(cookie);
     }
 
-    public void invalidateTGT(HttpServletRequest request) {
+    /**
+     * 使session中的tgt过期
+     * @param request
+     */
+    public void expireTGT(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             Authentication authentication = (Authentication) session.getAttribute(authNameInSession);
             authentication.getTicketGrantingTicket().markExpired();
         }
+    }
+
+    /**
+     * 销毁当前用户的登录信息，包括session，cookie
+     * 并使TGT过期
+     * @param request
+     * @param response
+     * @return TicketGrantingTicket 返回已过期的TicketGrantingTicket，返回null时表示当前用户此前已登出
+     */
+    public TicketGrantingTicket destroySession(HttpServletRequest request, HttpServletResponse response) {
+        // delete tgc from cookies
+        deleteCookieByName(response, tgcNameInCookie);
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            // invalidate TGT
+            Authentication authentication = (Authentication) session.getAttribute(authNameInSession);
+            TicketGrantingTicket ticketGrantingTicket = authentication.getTicketGrantingTicket();
+            ticketGrantingTicket.markExpired();
+            // invalidate session
+            session.invalidate();
+            return ticketGrantingTicket;
+        }
+        return null;
     }
 
     public void setTgcNameInCookie(String tgcNameInCookie) {

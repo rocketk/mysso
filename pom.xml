@@ -27,6 +27,7 @@
         <log4j.version>2.3</log4j.version>
         <junit.version>4.12</junit.version>
         <commons.lang.version>3.6</commons.lang.version>
+        <commons.io.version>2.5</commons.io.version>
         <commons.collections.version>4.1</commons.collections.version>
         <commons.beanutils.version>1.9.3</commons.beanutils.version>
         <javax.validation.version>1.1.0.Final</javax.validation.version>
