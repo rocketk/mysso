@@ -27,28 +27,28 @@ public class AttributedPrincipalResolverTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {new UsernamePasswordCredential("jack", ""), true, true, null}, // 正常用户，有attributes
-                {new UsernamePasswordCredential("peter", ""), true, false, null}, // 用户没有attributes
+                {new UsernamePasswordCredential("jack", ""), true}, // 正常用户，有attributes
+                {new UsernamePasswordCredential("peter", ""), false}, // 用户没有attributes
                 {new Credential() { // unsupported type
                     @Override
                     public String getId() {
                         return "jack";
                     }
-                }, false, false, CredentialNotSupportedException.class}
+                }, true} //　匿名类credential，也是正常用户，有attributes
         });
     }
 
     @Parameterized.Parameter
     public Credential credential;
 
-    @Parameterized.Parameter(1)
-    public boolean supports;
+//    @Parameterized.Parameter(1)
+//    public boolean supports;
 
-    @Parameterized.Parameter(2)
+    @Parameterized.Parameter(1)
     public boolean hasAttributes;
 
-    @Parameterized.Parameter(3)
-    public Class<? extends AuthenticationException> expectedException;
+//    @Parameterized.Parameter(2)
+//    public Class<? extends AuthenticationException> expectedException;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -61,9 +61,9 @@ public class AttributedPrincipalResolverTest {
 
     @Test
     public void verifyResolve() {
-        if (expectedException != null) {
-            thrown.expect(expectedException);
-        }
+//        if (expectedException != null) {
+//            thrown.expect(expectedException);
+//        }
         AttributedPrincipalResolver resolver = getResolver();
         Principal principal = resolver.resolve(credential);
         assertNotNull(principal);
