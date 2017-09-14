@@ -9,9 +9,7 @@ import mysso.security.SecretPasscodeValidator;
 public class GoogleAuthSecretPasscodeValidatorImpl implements SecretPasscodeValidator {
     @Override
     public boolean validateSecretPasscode(String secret, String passcode) {
-
         GoogleAuthenticator gAuth = new GoogleAuthenticator();
-        gAuth.authorize()
-        return false;
+        return gAuth.authorize(secret, Integer.parseInt(passcode));
     }
 }
