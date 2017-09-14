@@ -50,7 +50,7 @@
                     如果客户端应用是集群，但是没有做session共享，那么这里要填写每一个实例的地址（ip地址），
                     而不允许填写负载均衡地址-->
                 <property name="logoutUrls" value="http://127.0.0.1:9080/demo/backChannelLogout"/>
-                <property name="secretKey" value="anyRandomSecretKey"/>
+                <property name="secretKey" value="0123456789ABCDEF"/>
             </bean>
         </entry>
     </util:map>

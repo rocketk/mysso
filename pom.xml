@@ -12,6 +12,7 @@
         <module>core</module>
         <module>server-webapp</module>
         <module>protocol</module>
+        <module>supports-otp</module>
     </modules>
     <properties>
         <project.build.sourceVersion>1.7</project.build.sourceVersion>
