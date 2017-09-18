@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 /**
- * SecretPasscodeValidator的简单实现，不建议在生产环境中使用
+ * SecretPasscodeValidator的简单实现，不建议在生产环境中使用，建议使用GoogleAuthSecretPasscodeValidator替代此类
  * Created by pengyu on 2017/9/14.
  */
 public class PlainTextSecretCodeValidator implements SecretPasscodeValidator {
@@ -18,6 +18,7 @@ public class PlainTextSecretCodeValidator implements SecretPasscodeValidator {
     @Override
     public boolean validateSecretPasscode(String secret, String passcode) {
         Validate.notNull(secret, "secret is null");
+        Validate.notNull(passcode, "passcode is null");
         return StringUtils.equals(secret, passcode);
     }
 }
