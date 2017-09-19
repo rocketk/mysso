@@ -24,8 +24,8 @@ public class Constants {
     public static final int INVALID_SPID = 401;
     /** spid 与所要校验的 ticket 不匹配，客户端应阻止登录，并且给予用户适当提示 */
     public static final int MISMATCH_SPID = 402;
-    /** spkey 错误，客户端应阻止登录，并且给予用户适当提示 */
-    public static final int INVALID_SPKEY = 410;
+    /** secret passcode 错误，客户端应阻止登录，并且给予用户适当提示 */
+    public static final int INVALID_PASSCODE = 410;
     /** 服务端在处理请求时发生错误，客户端应阻止登录，并且给予用户适当提示或稍后再试 */
     public static final int ERROR = 500;
     /*------------ codes for ticket validation, end ------------*/
@@ -33,8 +33,8 @@ public class Constants {
     /*------------ names for parameter in a validation request, begin ------------*/
     /** 参数 spid 在http请求中的参数名 */
     public static final String PARAM_SPID = "spid";
-    /** 参数 spkey 在http请求中的参数名 */
-    public static final String PARAM_SPKEY = "spkey";
+    /** 参数 secret passcode 在http请求中的参数名 */
+    public static final String PARAM_SECRET_PASSCODE = "passcode";
     /** 参数 tk 在http请求中的参数名 */
     public static final String PARAM_TOKEN = "tk";
     /** 参数 st 在http请求中的参数名 */

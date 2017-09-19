@@ -5,6 +5,7 @@ import mysso.authentication.principal.PrincipalResolver;
 import mysso.protocol1.Constants;
 import mysso.protocol1.dto.AssertionDto;
 import mysso.protocol1.dto.PrincipalDto;
+import mysso.security.SecretPasscodeValidator;
 import mysso.serviceprovider.ServiceProvider;
 import mysso.serviceprovider.registry.ServiceProviderRegistry;
 import mysso.ticket.TicketManager;
@@ -31,16 +32,16 @@ public class ValidationController {
     private TicketManager ticketManager;
     private ServiceProviderRegistry serviceProviderRegistry;
     private PrincipalResolver principalResolver;
+    private SecretPasscodeValidator secretPasscodeValidator;
 
 
-
-    private AssertionDto validateServiceProvider(String spid, String secretKey) {
+    private AssertionDto validateServiceProvider(String spid, String passcode) {
         // validate the spid
         if (StringUtils.isBlank(spid)) {
             return new AssertionDto(Constants.INVALID_SPID, "invalid spid");
         }
-        if (StringUtils.isBlank(secretKey)) {
-            return new AssertionDto(Constants.INVALID_SPKEY, "invalid secret key");
+        if (StringUtils.isBlank(passcode)) {
+            return new AssertionDto(Constants.INVALID_PASSCODE, "passcode is null");
         }
         ServiceProvider serviceProvider = serviceProviderRegistry.get(spid);
         if (serviceProvider == null) {
@@ -49,8 +50,9 @@ public class ValidationController {
         // validate the secret key of sp
         Validate.notNull(serviceProvider.getSecretKey(),
                 "the secret key of serviceProvider is null, spid " + spid);
-        if (!serviceProvider.getSecretKey().equals(secretKey)) {
-            return new AssertionDto(Constants.INVALID_SPKEY, "invalid secret key");
+//        if (!serviceProvider.getSecretKey().equals(passcode)) {
+        if (!secretPasscodeValidator.validateSecretPasscode(serviceProvider.getSecretKey(), passcode)) {
+            return new AssertionDto(Constants.INVALID_PASSCODE, "invalid secret passcode");
         }
         return null;
     }
@@ -60,8 +62,8 @@ public class ValidationController {
     public AssertionDto validateServiceTicket(HttpServletRequest request, HttpServletResponse response) {
         try {
             String spid = request.getParameter(Constants.PARAM_SPID);
-            String secretKey = request.getParameter(Constants.PARAM_SPKEY);
-            AssertionDto assertion = validateServiceProvider(spid, secretKey);
+            String passcode = request.getParameter(Constants.PARAM_SECRET_PASSCODE);
+            AssertionDto assertion = validateServiceProvider(spid, passcode);
             if (assertion != null) {
                 log.info("validated service ticket failed, assertion.code: {}, spid: {}", assertion.getCode(), spid);
                 return assertion;
@@ -95,7 +97,7 @@ public class ValidationController {
     public AssertionDto validateToken(HttpServletRequest request, HttpServletResponse response) {
         try {
             String spid = request.getParameter(Constants.PARAM_SPID);
-            String secretKey = request.getParameter(Constants.PARAM_SPKEY);
+            String secretKey = request.getParameter(Constants.PARAM_SECRET_PASSCODE);
             AssertionDto assertion = validateServiceProvider(spid, secretKey);
             if (assertion != null) {
                 log.info("validated token failed, assertion.code: {}, spid: {}", assertion.getCode(), spid);
@@ -140,5 +142,9 @@ public class ValidationController {
 
     public void setPrincipalResolver(PrincipalResolver principalResolver) {
         this.principalResolver = principalResolver;
+    }
+
+    public void setSecretPasscodeValidator(SecretPasscodeValidator secretPasscodeValidator) {
+        this.secretPasscodeValidator = secretPasscodeValidator;
     }
 }

@@ -64,6 +64,7 @@
         <property name="principalResolver" ref="principalResolver"/>
         <property name="serviceProviderRegistry" ref="serviceProviderRegistry"/>
         <property name="ticketManager" ref="ticketManager"/>
+        <property name="secretPasscodeValidator" ref="secretPasscodeValidator"/>
     </bean>
 
     <mvc:interceptors>

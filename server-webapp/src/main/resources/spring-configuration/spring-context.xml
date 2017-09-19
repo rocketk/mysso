@@ -99,6 +99,8 @@
     <bean id="logoutHandler" class="mysso.logout.HttpLogoutHandler">
     </bean>
 
+    <bean id="secretPasscodeValidator" class="mysso.security.PlainTextSecretPasscodeValidator"/>
+
     <!-- filters -->
     <bean id="characterEncodingFilter" class="org.springframework.web.filter.CharacterEncodingFilter">
         <property name="encoding" value="UTF-8"/>
