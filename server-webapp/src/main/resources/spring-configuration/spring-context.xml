@@ -99,7 +99,9 @@
     <bean id="logoutHandler" class="mysso.logout.HttpLogoutHandler">
     </bean>
 
-    <bean id="secretPasscodeValidator" class="mysso.security.PlainTextSecretPasscodeValidator"/>
+    <bean id="secretPasscodeValidator" class="mysso.supports.otp.security.GoogleAuthSecretPasscodeValidator"
+        c:googleAuthenticator-ref="googleAuthenticator"/>
+    <bean id="googleAuthenticator" class="com.warrenstrange.googleauth.GoogleAuthenticator"/>
 
     <!-- filters -->
     <bean id="characterEncodingFilter" class="org.springframework.web.filter.CharacterEncodingFilter">
