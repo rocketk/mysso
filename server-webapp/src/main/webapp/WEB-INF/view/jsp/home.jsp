@@ -12,7 +12,7 @@ Hi, ${authentication.principal.id}!
 <br/>
 <p>接入单点登录系统的应用, 您可以直接访问:</p>
 <c:forEach items="${serviceProviderMap}" var="one">
-    <a href="${one.value.homeUrl}" target="_blank">${one.value.name}</a><br/>
+    <a href="${one.value.homeUrl}">${one.value.name}</a><br/>
 </c:forEach>
 
 </body>
