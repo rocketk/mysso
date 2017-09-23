@@ -19,7 +19,7 @@ public class UUIDGeneratorTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"tgt-", ".localhost", 10000},
+                {"tgt-", ".localhost", 10000}, // 前缀tgt-，后缀.localhost，循环10000次
                 {"st-", ".localhost", 10000},
                 {"tk-", ".localhost", 10000},
                 {"tgt-", "", 10000},

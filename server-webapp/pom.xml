@@ -25,6 +25,11 @@
             <artifactId>core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>mysso</groupId>
+            <artifactId>supports-otp</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
         <!-- j2ee -->
         <dependency>
             <groupId>javax.servlet</groupId>
