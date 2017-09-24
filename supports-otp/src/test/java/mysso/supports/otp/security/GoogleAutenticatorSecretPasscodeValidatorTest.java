@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * Created by pengyu on 2017/9/18.
+ * Created by pengyu
  */
 public class GoogleAutenticatorSecretPasscodeValidatorTest {
     protected GoogleAuthSecretPasscodeValidator secretPasscodeValidator;
