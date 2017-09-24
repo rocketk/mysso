@@ -33,7 +33,7 @@ public class RedisTicketRegistry implements TicketRegistry {
     @Override
     public void add(AbstractTicket ticket) {
         Validate.notNull(ticket, "ticket should not be null");
-        String ticketPrefix = null;
+        String ticketPrefix;
         if (ticket instanceof TicketGrantingTicket) {
             ticketPrefix = tgtPrefix;
         } else if (ticket instanceof ServiceTicket) {
@@ -57,7 +57,9 @@ public class RedisTicketRegistry implements TicketRegistry {
             log.info("added ticket to redis, type: {}, id: {}", ticket.getClass().getSimpleName(), ticket.getId());
         } catch (Exception e) {
             log.error("an exception occurred when adding a ticket, caused by: " + e.getMessage(), e);
-            e.printStackTrace();
+            throw new RedisTicketRegistryException(e.getMessage(), e);
+        } finally {
+            jedis.close();
         }
     }
 
@@ -87,8 +89,10 @@ public class RedisTicketRegistry implements TicketRegistry {
             jedis.set(ticketPrefix + ticket.getId(), ticket2string(ticket));
             log.info("updated ticket to redis, type: {}, id: {}", ticket.getClass().getSimpleName(), ticket.getId());
         } catch (Exception e) {
-            log.error("an exception occurred when adding a ticket, caused by: " + e.getMessage(), e);
-            e.printStackTrace();
+            log.error("an exception occurred when updating a ticket, caused by: " + e.getMessage(), e);
+            throw new RedisTicketRegistryException(e.getMessage(), e);
+        } finally {
+            jedis.close();
         }
     }
 
@@ -97,19 +101,28 @@ public class RedisTicketRegistry implements TicketRegistry {
         Validate.notNull(id, "id should not be null");
         Validate.notNull(clazz, "clazz should not be null");
         Jedis jedis = pool.getResource();
-        if (StringUtils.equals(TicketGrantingTicket.class.getCanonicalName(), clazz.getCanonicalName())) {
-            deleteChildren(get(id, TicketGrantingTicket.class), jedis);
-            return jedis.del(tgtPrefix + id) > 0;
-        } else if (StringUtils.equals(ServiceTicket.class.getCanonicalName(), clazz.getCanonicalName())) {
-            ServiceTicket st = get(id, ServiceTicket.class);
-            deleteIdFromTGT(st);
-            return jedis.del(stPrefix + id) > 0;
-        } else if (StringUtils.equals(Token.class.getCanonicalName(), clazz.getCanonicalName())) {
-            Token tk = get(id, Token.class);
-            deleteIdFromTGT(tk);
-            return jedis.del(tkPrefix + id) > 0;
-        } else {
-            throw new UnsupportTicketTypeException(String.format("the ticket type is unsupported: %s", clazz));
+        try {
+            if (StringUtils.equals(TicketGrantingTicket.class.getCanonicalName(), clazz.getCanonicalName())) {
+                deleteChildren(get(id, TicketGrantingTicket.class), jedis);
+                return jedis.del(tgtPrefix + id) > 0;
+            } else if (StringUtils.equals(ServiceTicket.class.getCanonicalName(), clazz.getCanonicalName())) {
+                ServiceTicket st = get(id, ServiceTicket.class);
+                deleteIdFromTGT(st);
+                return jedis.del(stPrefix + id) > 0;
+            } else if (StringUtils.equals(Token.class.getCanonicalName(), clazz.getCanonicalName())) {
+                Token tk = get(id, Token.class);
+                deleteIdFromTGT(tk);
+                return jedis.del(tkPrefix + id) > 0;
+            } else {
+                throw new UnsupportTicketTypeException(String.format("the ticket type is unsupported: %s", clazz));
+            }
+        } catch(UnsupportTicketTypeException e){
+            throw e;
+        } catch (Exception e) {
+            log.error("an exception occurred when deleting a ticket, caused by: " + e.getMessage(), e);
+            throw new RedisTicketRegistryException(e.getMessage(), e);
+        } finally {
+            jedis.close();
         }
     }
 
@@ -117,14 +130,14 @@ public class RedisTicketRegistry implements TicketRegistry {
         if (tgt == null) {
             return;
         }
-        if (tgt.getServiceTicketIds() != null) {
+        if (tgt.getServiceTicketIds() != null && tgt.getServiceTicketIds().size() > 0) {
             String[] keys = tgt.getServiceTicketIds().toArray(new String[]{});
             for (int i = 0; i < keys.length; i++) {
                 keys[i] = stPrefix + keys[i];
             }
             jedis.del(keys);
         }
-        if (tgt.getTokenIds() != null) {
+        if (tgt.getTokenIds() != null && tgt.getTokenIds().size() > 0) {
             String[] keys = tgt.getTokenIds().toArray(new String[]{});
             for (int i = 0; i < keys.length; i++) {
                 keys[i] = tkPrefix + keys[i];
@@ -170,8 +183,15 @@ public class RedisTicketRegistry implements TicketRegistry {
             throw new UnsupportTicketTypeException(String.format("the ticket type is unsupported: %s", clazz));
         }
         Jedis jedis = pool.getResource();
-        String objStr = jedis.get(ticketPrefix + id);
-        return str2ticket(objStr, clazz);
+        try {
+            String objStr = jedis.get(ticketPrefix + id);
+            return str2ticket(objStr, clazz);
+        } catch (Exception e) {
+            log.error("an exception occurred when getting a ticket, caused by: " + e.getMessage(), e);
+            throw new RedisTicketRegistryException(e.getMessage(), e);
+        } finally {
+            jedis.close();
+        }
     }
 
     @Override
@@ -188,20 +208,40 @@ public class RedisTicketRegistry implements TicketRegistry {
             throw new UnsupportTicketTypeException(String.format("the ticket type is unsupported: %s", clazz));
         }
         Jedis jedis = pool.getResource();
-        Set<String> ticketKeysSet = jedis.keys(ticketPrefix + "*");
-        Map<String, T> ticketMap = new HashMap<>();
-        if (ticketKeysSet != null) {
-            String[] ticketKeysArray = ticketKeysSet.toArray(new String[]{});
-            List<String> ticketStringValuesList = jedis.mget(ticketKeysArray);
-            Validate.isTrue(ticketKeysSet.size() == ticketStringValuesList.size());
-            for (int i = 0; i < ticketKeysArray.length; i++) {
-                ticketMap.put(ticketKeysArray[i], str2ticket(ticketStringValuesList.get(i), clazz));
+        try {
+            Set<String> ticketKeysSet = jedis.keys(ticketPrefix + "*");
+            Map<String, T> ticketMap = new HashMap<>();
+            if (ticketKeysSet != null && ticketKeysSet.size() > 0) {
+                String[] ticketKeysArray = ticketKeysSet.toArray(new String[]{});
+                List<String> ticketStringValuesList = jedis.mget(ticketKeysArray);
+                Validate.isTrue(ticketKeysSet.size() == ticketStringValuesList.size());
+                for (int i = 0; i < ticketKeysArray.length; i++) {
+                    ticketMap.put(ticketKeysArray[i], str2ticket(ticketStringValuesList.get(i), clazz));
+                }
             }
+            return ticketMap;
+        } catch (Exception e) {
+            log.error("an exception occurred when getting all tickets, caused by: " + e.getMessage(), e);
+            throw new RedisTicketRegistryException(e.getMessage(), e);
+        } finally {
+            jedis.close();
         }
-        return ticketMap;
+    }
+
+    @Override
+    public void clear() {
+        Jedis jedis = pool.getResource();
+        try {
+            jedis.flushAll();
+        } finally {
+            jedis.close();
+        }
     }
 
     private String ticket2string(AbstractTicket ticket) {
+        if (ticket == null) {
+            return null;
+        }
         ObjectOutputStream oos = null;
         ByteArrayOutputStream baos = null;
         try {
@@ -220,6 +260,9 @@ public class RedisTicketRegistry implements TicketRegistry {
     }
 
     private <T extends AbstractTicket> T str2ticket(String objStr, Class<T> clazz) {
+        if (objStr == null) {
+            return null;
+        }
         byte[] objBytes = Base64.decodeBase64(objStr);
         ByteArrayInputStream bais = null;
         ObjectInputStream ois = null;

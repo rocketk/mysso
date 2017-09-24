@@ -50,4 +50,9 @@ public interface TicketRegistry {
      * @return
      */
     <T extends AbstractTicket> Map<String, T> getAll(Class<T> clazz);
+
+    /**
+     * 清空全部 ticket
+     */
+    void clear();
 }

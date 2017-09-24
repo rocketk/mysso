@@ -154,4 +154,11 @@ public class InMemoryTicketRegistry implements TicketRegistry {
         }
         return new HashMap<>(ticketMap);
     }
+
+    @Override
+    public void clear() {
+        tgtMap.clear();
+        stMap.clear();
+        tkMap.clear();
+    }
 }

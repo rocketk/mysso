@@ -1,14 +1,16 @@
 package mysso.ticket.registry;
 
-import mysso.ticket.*;
+import mysso.ticket.AbstractTicket;
+import mysso.ticket.ServiceTicket;
+import mysso.ticket.TicketGrantingTicket;
+import mysso.ticket.Token;
 import mysso.ticket.exception.DuplicateIdException;
-import mysso.ticket.exception.TicketException;
 import mysso.ticket.exception.UnsupportTicketTypeException;
+import org.apache.commons.collections4.SetUtils;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -17,6 +19,12 @@ import static org.junit.Assert.*;
  * Created by pengyu on 2017/8/13.
  */
 public abstract class AbstractTicketRegistryTest {
+
+    @Before
+    public void setUp() {
+        TicketRegistry ticketRegistry = getNewTicketRegistry();
+        ticketRegistry.clear();
+    }
 
     protected <T extends AbstractTicket> void verifyCRUD(T ticket1, T ticket2) {
         try {
@@ -39,9 +47,11 @@ public abstract class AbstractTicketRegistryTest {
                 serviceTicketIds1.add("st-001");
                 serviceTicketIds1.add("st-002");
                 ((TicketGrantingTicket) ticket1).setServiceTicketIds(serviceTicketIds1);
+                ticketRegistry.update(ticket1);
                 assertEquals(ticket1, ticketRegistry.get(ticket1.getId(), TicketGrantingTicket.class));
-                assertEquals(((TicketGrantingTicket) ticket1).getServiceTicketIds(),
-                        ticketRegistry.get(ticket1.getId(), TicketGrantingTicket.class).getServiceTicketIds());
+                Set<String> stIdsOfTicket1 = ((TicketGrantingTicket) ticket1).getServiceTicketIds();
+                Set<String> stIdsOfRegistry = ticketRegistry.get(ticket1.getId(), TicketGrantingTicket.class).getServiceTicketIds();
+                assertTrue(SetUtils.isEqualSet(stIdsOfTicket1, stIdsOfRegistry));
             } else if(ticket1 instanceof Token) {
                 // 验证token的有效期更新
                 ((Token) ticket1).setExpiredTime(System.currentTimeMillis() + 20000);
@@ -179,6 +189,19 @@ public abstract class AbstractTicketRegistryTest {
             fail("an TicketException should be throw");
         } catch (DuplicateIdException e) {
         }
+    }
+
+    @Test
+    public void verifyClear() {
+        TicketGrantingTicket tgt1 = new TicketGrantingTicket("tgt-001", System.currentTimeMillis(), "principal-001");
+        // another tgt with the same id to tgt1
+        TicketGrantingTicket tgt2 = new TicketGrantingTicket("tgt-002", System.currentTimeMillis(), "principal-001");
+        TicketRegistry ticketRegistry = getNewTicketRegistry();
+        ticketRegistry.add(tgt1);
+        ticketRegistry.add(tgt2);
+        assertEquals(2, ticketRegistry.getAll(TicketGrantingTicket.class).size());
+        ticketRegistry.clear();
+        assertEquals(0, ticketRegistry.getAll(TicketGrantingTicket.class).size());
     }
 
     protected abstract TicketRegistry getNewTicketRegistry();
