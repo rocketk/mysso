@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * 用于封装server端向client端返回ticket校验结果的实体类
  * ticket既可以指ServiceTicket也可以指Token
- * Created by pengyu on 17-8-19.
+ * Created by pengyu.
  */
 public class AssertionDto implements Serializable {
     /**

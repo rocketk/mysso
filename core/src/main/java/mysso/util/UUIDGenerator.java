@@ -3,7 +3,7 @@ package mysso.util;
 import java.util.UUID;
 
 /**
- * Created by pengyu on 2017/8/5.
+ * Created by pengyu.
  */
 public class UUIDGenerator implements UniqueIdGenerator {
     private String prefix;

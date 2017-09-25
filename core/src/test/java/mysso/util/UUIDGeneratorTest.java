@@ -12,7 +12,7 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 /**
- * Created by pengyu on 2017/8/16.
+ * Created by pengyu.
  */
 @RunWith(Parameterized.class)
 public class UUIDGeneratorTest {

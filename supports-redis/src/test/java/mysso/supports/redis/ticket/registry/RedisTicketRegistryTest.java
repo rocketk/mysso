@@ -5,7 +5,7 @@ import mysso.ticket.registry.TicketRegistry;
 import redis.clients.jedis.JedisPool;
 
 /**
- * Created by pengyu on 2017/9/24.
+ * Created by pengyu.
  */
 public class RedisTicketRegistryTest extends AbstractTicketRegistryTest {
     @Override

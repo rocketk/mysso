@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by pengyu on 2017/8/13.
+ * Created by pengyu.
  */
 public abstract class AbstractServiceProviderRegistryTest {
 

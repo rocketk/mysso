@@ -1,7 +1,7 @@
 package mysso.supports.redis.ticket.registry;
 
 /**
- * Created by pengyu on 2017/9/24.
+ * Created by pengyu.
  */
 public class RedisTicketRegistryException extends RuntimeException {
     public RedisTicketRegistryException() {

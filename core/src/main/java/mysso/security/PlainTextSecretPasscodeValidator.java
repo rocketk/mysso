@@ -5,7 +5,7 @@ import org.apache.commons.lang3.Validate;
 
 /**
  * SecretPasscodeValidator的简单实现，不建议在生产环境中使用，建议使用GoogleAuthSecretPasscodeValidator替代此类
- * Created by pengyu on 2017/9/14.
+ * Created by pengyu.
  */
 public class PlainTextSecretPasscodeValidator implements SecretPasscodeValidator {
     /**

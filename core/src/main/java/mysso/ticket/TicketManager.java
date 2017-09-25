@@ -6,7 +6,7 @@ import mysso.authentication.credential.Credential;
 import java.io.Serializable;
 
 /**
- * Created by pengyu on 2017/8/5.
+ * Created by pengyu.
  */
 public interface TicketManager extends Serializable {
     /**

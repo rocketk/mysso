@@ -4,7 +4,7 @@ import mysso.serviceprovider.ServiceProvider;
 import mysso.ticket.Token;
 
 /**
- * Created by pengyu on 2017/8/29.
+ * Created by pengyu.
  */
 public class LogoutServiceInstance {
     private ServiceProvider serviceProvider;

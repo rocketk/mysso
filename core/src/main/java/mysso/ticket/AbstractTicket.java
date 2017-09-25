@@ -3,7 +3,7 @@ package mysso.ticket;
 import java.io.Serializable;
 
 /**
- * Created by pengyu on 2017/8/6.
+ * Created by pengyu.
  */
 public abstract class AbstractTicket implements Serializable {
     protected String id;

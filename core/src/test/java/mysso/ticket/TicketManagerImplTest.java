@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Created by pengyu on 2017/8/14.
+ * Created by pengyu.
  */
 public class TicketManagerImplTest {
     @Test

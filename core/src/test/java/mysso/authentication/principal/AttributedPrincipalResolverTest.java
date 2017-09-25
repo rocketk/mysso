@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by pengyu on 2017/8/16.
+ * Created by pengyu.
  */
 @RunWith(Parameterized.class)
 public class AttributedPrincipalResolverTest {

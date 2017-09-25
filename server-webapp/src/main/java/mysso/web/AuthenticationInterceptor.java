@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by pengyu on 17-8-18.
+ * Created by pengyu.
  */
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by pengyu on 17-8-29.
+ * Created by pengyu.
  */
 public class RedisTicketRegistry implements TicketRegistry {
     private Logger log = LoggerFactory.getLogger(getClass());

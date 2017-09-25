@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Created by pengyu on 2017/8/16.
+ * Created by pengyu.
  */
 public class DefaultAuthenticationManagerImplTest {
     @Test

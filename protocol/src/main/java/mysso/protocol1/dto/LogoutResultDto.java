@@ -3,7 +3,7 @@ package mysso.protocol1.dto;
 import java.util.List;
 
 /**
- * Created by pengyu on 2017/8/28.
+ * Created by pengyu.
  */
 public class LogoutResultDto {
     private int code;

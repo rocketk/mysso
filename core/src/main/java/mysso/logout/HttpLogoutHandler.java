@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by pengyu on 17-9-4.
+ * Created by pengyu.
  */
 public class HttpLogoutHandler implements LogoutHandler {
     private Logger log = LoggerFactory.getLogger(getClass());

@@ -5,7 +5,7 @@ import mysso.security.SecretPasscodeValidator;
 import org.apache.commons.lang3.Validate;
 
 /**
- * Created by pengyu on 2017/9/14.
+ * Created by pengyu.
  */
 public class GoogleAuthSecretPasscodeValidator implements SecretPasscodeValidator {
     protected final GoogleAuthenticator googleAuthenticator;

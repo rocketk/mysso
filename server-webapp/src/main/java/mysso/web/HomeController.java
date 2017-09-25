@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
- * Created by pengyu on 17-8-18.
+ * Created by pengyu.
  */
 @Controller
 public class HomeController {

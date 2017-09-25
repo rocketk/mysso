@@ -5,7 +5,7 @@ import mysso.ticket.ServiceTicket;
 import mysso.ticket.Token;
 
 /**
- * Created by pengyu on 2017/8/5.
+ * Created by pengyu.
  */
 public interface AuthenticationManager {
     /**

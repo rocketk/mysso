@@ -5,7 +5,7 @@ import mysso.ticket.AbstractTicket;
 import java.util.Map;
 
 /**
- * Created by pengyu on 2017/8/6.
+ * Created by pengyu.
  */
 public interface TicketRegistry {
     /**

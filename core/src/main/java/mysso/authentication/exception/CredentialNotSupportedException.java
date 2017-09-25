@@ -1,7 +1,7 @@
 package mysso.authentication.exception;
 
 /**
- * Created by pengyu on 2017/8/5.
+ * Created by pengyu.
  */
 public class CredentialNotSupportedException extends AuthenticationException {
     public CredentialNotSupportedException(String message, Throwable cause) {

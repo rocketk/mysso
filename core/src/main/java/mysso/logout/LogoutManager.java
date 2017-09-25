@@ -3,7 +3,7 @@ package mysso.logout;
 import java.util.Set;
 
 /**
- * Created by pengyu on 2017/8/28.
+ * Created by pengyu.
  */
 // todo
 public interface LogoutManager {

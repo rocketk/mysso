@@ -4,7 +4,7 @@ import mysso.authentication.credential.Credential;
 import mysso.authentication.exception.AuthenticationException;
 
 /**
- * Created by pengyu on 2017/8/5.
+ * Created by pengyu.
  */
 public interface PrincipalResolver {
 //    boolean supports(Credential credential);

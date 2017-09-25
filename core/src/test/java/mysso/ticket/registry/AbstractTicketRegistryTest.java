@@ -16,7 +16,7 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 /**
- * Created by pengyu on 2017/8/13.
+ * Created by pengyu.
  */
 public abstract class AbstractTicketRegistryTest {
 

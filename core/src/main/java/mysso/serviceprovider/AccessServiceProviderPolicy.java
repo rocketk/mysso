@@ -1,7 +1,7 @@
 package mysso.serviceprovider;
 
 /**
- * Created by pengyu on 2017/8/9.
+ * Created by pengyu.
  */
 public enum AccessServiceProviderPolicy {
     ALLOW_ALL("ALLOW_ALL", 0), NEED_ANY_ATTRIBUTE("NEED_ANY_ATTRIBUTE", 1), NEED_ALL_ATTRIBUTES("NEED_ALL_ATTRIBUTES", 2);

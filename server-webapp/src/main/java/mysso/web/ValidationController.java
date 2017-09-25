@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by pengyu on 17-8-19.
+ * Created by pengyu.
  */
 @Controller
 public class ValidationController {

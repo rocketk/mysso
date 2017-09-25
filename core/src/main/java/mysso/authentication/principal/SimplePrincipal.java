@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.Map;
 
 /**
- * Created by pengyu on 2017/8/3.
+ * Created by pengyu.
  */
 public class SimplePrincipal implements Principal {
     private String id;

@@ -1,7 +1,7 @@
 package mysso.security;
 
 /**
- * Created by pengyu on 2017/9/14.
+ * Created by pengyu.
  */
 public interface SecretPasscodeValidator {
     /**

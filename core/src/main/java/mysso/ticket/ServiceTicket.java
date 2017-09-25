@@ -1,7 +1,7 @@
 package mysso.ticket;
 
 /**
- * Created by pengyu on 2017/8/6.
+ * Created by pengyu.
  */
 public class ServiceTicket extends AbstractGrantedTicket {
     public ServiceTicket(String id, long creationTime, String credentialId) {

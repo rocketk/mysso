@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by pengyu on 2017/8/5.
+ * Created by pengyu.
  */
 public class TicketGrantingTicket extends AbstractTicket{
     private Set<String> serviceTicketIds = new HashSet<>();

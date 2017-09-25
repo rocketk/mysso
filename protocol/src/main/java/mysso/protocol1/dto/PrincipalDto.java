@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * Created by pengyu on 17-8-26.
+ * Created by pengyu.
  */
 public class PrincipalDto implements Serializable {
     private String id;

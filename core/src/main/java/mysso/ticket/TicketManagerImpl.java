@@ -10,7 +10,7 @@ import org.apache.commons.lang3.Validate;
 import java.util.HashSet;
 
 /**
- * Created by pengyu on 2017/8/14.
+ * Created by pengyu.
  */
 public class TicketManagerImpl implements TicketManager {
 

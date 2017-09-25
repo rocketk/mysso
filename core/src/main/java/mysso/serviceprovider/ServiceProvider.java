@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by pengyu on 2017/8/8.
+ * Created by pengyu.
  */
 public class ServiceProvider implements Serializable {
     protected String id;

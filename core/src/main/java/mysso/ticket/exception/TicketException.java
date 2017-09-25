@@ -1,7 +1,7 @@
 package mysso.ticket.exception;
 
 /**
- * Created by pengyu on 2017/8/13.
+ * Created by pengyu.
  */
 public class TicketException extends RuntimeException {
 //    public static final String UNSUPPORTED_TICKET_TYPE = "the ticket type is unsupported: {}";

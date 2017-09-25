@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
- * Created by pengyu on 2017/8/5.
+ * Created by pengyu.
  */
 @Controller
 public class AuthenticationController {

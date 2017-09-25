@@ -2,7 +2,7 @@ package mysso.protocol1;
 
 /**
  * mysso-protocol 1.0 中所规定的常量值
- * Created by pengyu on 17-8-19.
+ * Created by pengyu.
  */
 public class Constants {
     /*------------ codes for ticket validation, begin ------------*/

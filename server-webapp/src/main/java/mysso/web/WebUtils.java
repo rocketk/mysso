@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Created by pengyu on 17-8-18.
+ * Created by pengyu.
  */
 public class WebUtils {
     private String tgcNameInCookie;

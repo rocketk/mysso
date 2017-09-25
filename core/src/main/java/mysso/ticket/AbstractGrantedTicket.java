@@ -4,7 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- * Created by pengyu on 2017/8/5.
+ * Created by pengyu.
  */
 public abstract class AbstractGrantedTicket extends AbstractTicket {
     protected String ticketGrantingTicketId;

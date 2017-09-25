@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by pengyu on 2017/8/8.
+ * Created by pengyu.
  */
 public class InMemoryTicketRegistry implements TicketRegistry {
     private Map<String, TicketGrantingTicket> tgtMap = new HashMap<>();

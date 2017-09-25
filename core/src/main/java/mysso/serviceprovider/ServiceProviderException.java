@@ -1,7 +1,7 @@
 package mysso.serviceprovider;
 
 /**
- * Created by pengyu on 2017/8/8.
+ * Created by pengyu.
  */
 public class ServiceProviderException extends RuntimeException {
     public ServiceProviderException() {

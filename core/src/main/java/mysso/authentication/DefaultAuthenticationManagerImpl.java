@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
- * Created by pengyu on 2017/8/5.
+ * Created by pengyu.
  */
 public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
     private Logger log = LoggerFactory.getLogger(getClass());

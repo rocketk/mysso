@@ -1,7 +1,7 @@
 package mysso.ticket.registry;
 
 /**
- * Created by pengyu on 2017/8/13.
+ * Created by pengyu.
  */
 public class InMemoryTicketRegistryTest extends AbstractTicketRegistryTest {
     @Override

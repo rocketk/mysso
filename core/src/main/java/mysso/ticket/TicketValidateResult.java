@@ -3,7 +3,7 @@ package mysso.ticket;
 import java.io.Serializable;
 
 /**
- * Created by pengyu on 2017/8/17.
+ * Created by pengyu.
  */
 public class TicketValidateResult implements Serializable {
     private int code;

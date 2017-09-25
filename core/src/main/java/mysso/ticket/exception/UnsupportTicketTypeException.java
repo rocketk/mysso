@@ -1,7 +1,7 @@
 package mysso.ticket.exception;
 
 /**
- * Created by pengyu on 2017/8/14.
+ * Created by pengyu.
  */
 public class UnsupportTicketTypeException extends TicketException {
     public UnsupportTicketTypeException() {

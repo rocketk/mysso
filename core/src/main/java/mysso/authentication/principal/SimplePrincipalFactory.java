@@ -5,7 +5,7 @@ import org.apache.commons.lang3.Validate;
 import java.util.Map;
 
 /**
- * Created by pengyu on 2017/8/5.
+ * Created by pengyu.
  */
 public class SimplePrincipalFactory implements PrincipalFactory {
     @Override

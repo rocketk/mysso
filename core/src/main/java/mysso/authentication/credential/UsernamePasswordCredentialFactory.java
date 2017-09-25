@@ -5,7 +5,7 @@ import org.apache.commons.lang3.Validate;
 import java.util.Map;
 
 /**
- * Created by pengyu on 17-8-17.
+ * Created by pengyu.
  */
 public class UsernamePasswordCredentialFactory implements CredentialFactory {
     private String keyForUsername = "username";
