@@ -6,7 +6,7 @@ import mysso.serviceprovider.registry.ServiceProviderRegistry;
 import java.util.Map;
 
 /**
- * Created by pengyu
+ * Created by pengyu.
  */
 public class JdbcServiceProviderRegistry implements ServiceProviderRegistry{
     @Override
