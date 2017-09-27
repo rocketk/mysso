@@ -37,6 +37,7 @@ public class DefaultAuthenticationManagerImpl implements AuthenticationManager {
                 Principal principal = principalResolver.resolve(credential);
                 TicketGrantingTicket ticketGrantingTicket = ticketManager.createTicketGrantingTicket(credential);
                 log.info("TicketGrantingTicket created: {}, for principal {}", ticketGrantingTicket.getId(), principal.getId());
+                // todo 判断此用户是否能够进入当前serviceProvider
                 return new Authentication(
                         principal,
                         new Date(),

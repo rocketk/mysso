@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by pengyu.
@@ -16,14 +17,14 @@ public class ServiceProvider implements Serializable {
     protected String description;
     protected String secretKey;
     protected String homeUrl;
-    protected List<String> logoutUrls;
-    protected Map<String, String> neededAttributes;
+    protected Set<String> logoutUrls;
+    protected Set<String> neededAttributes;
     protected AccessServiceProviderPolicy accessServiceProviderPolicy = AccessServiceProviderPolicy.ALLOW_ALL;
 
     public ServiceProvider() {
     }
 
-    public ServiceProvider(String id, String name, String description, String secretKey, List<String> logoutUrls) {
+    public ServiceProvider(String id, String name, String description, String secretKey, Set<String> logoutUrls) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -32,8 +33,8 @@ public class ServiceProvider implements Serializable {
     }
 
 
-    public ServiceProvider(String id, String name, String description, String secretKey, List<String> logoutUrls,
-                           Map<String, String> neededAttributes,
+    public ServiceProvider(String id, String name, String description, String secretKey, Set<String> logoutUrls,
+                           Set<String> neededAttributes,
                            AccessServiceProviderPolicy accessServiceProviderPolicy) {
         this.id = id;
         this.name = name;
@@ -68,11 +69,11 @@ public class ServiceProvider implements Serializable {
         this.description = description;
     }
 
-    public List<String> getLogoutUrls() {
+    public Set<String> getLogoutUrls() {
         return logoutUrls;
     }
 
-    public void setLogoutUrls(List<String> logoutUrls) {
+    public void setLogoutUrls(Set<String> logoutUrls) {
         this.logoutUrls = logoutUrls;
     }
 
@@ -84,11 +85,11 @@ public class ServiceProvider implements Serializable {
         this.secretKey = secretKey;
     }
 
-    public Map<String, String> getNeededAttributes() {
+    public Set<String> getNeededAttributes() {
         return neededAttributes;
     }
 
-    public void setNeededAttributes(Map<String, String> neededAttributes) {
+    public void setNeededAttributes(Set<String> neededAttributes) {
         this.neededAttributes = neededAttributes;
     }
 

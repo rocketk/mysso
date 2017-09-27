@@ -6,6 +6,7 @@ import mysso.serviceprovider.registry.ServiceProviderRegistry;
 import java.util.Map;
 
 /**
+ * todo
  * Created by pengyu.
  */
 public class JdbcServiceProviderRegistry implements ServiceProviderRegistry{
@@ -28,4 +29,5 @@ public class JdbcServiceProviderRegistry implements ServiceProviderRegistry{
     public Map<String, ServiceProvider> getAll() {
         return null;
     }
+
 }

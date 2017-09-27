@@ -4,10 +4,7 @@ import mysso.serviceprovider.ServiceProvider;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by pengyu.
@@ -18,9 +15,9 @@ public abstract class AbstractServiceProviderRegistryTest {
     public void verifyCRUD() {
         String spIdA = "sp-aaaa";
         String spIdB = "sp-bbbb";
-        List<String> logoutUrlsOfA = new ArrayList<>();
+        Set<String> logoutUrlsOfA = new HashSet<>();
         logoutUrlsOfA.add("http://www.example.com/a/logout");
-        List<String> logoutUrlsOfB = new ArrayList<>();
+        Set<String> logoutUrlsOfB = new HashSet<>();
         logoutUrlsOfB.add("http://www.example.com/b/logout");
         Map<String, ServiceProvider> map = new HashMap();
         ServiceProvider spA = new ServiceProvider(
@@ -58,7 +55,7 @@ public abstract class AbstractServiceProviderRegistryTest {
     @Test
     public void verifyUpdateExistingServiceProvider() {
         String spId = "sp-aaaa";
-        List<String> logoutUrlsOfA = new ArrayList<>();
+        Set<String> logoutUrlsOfA = new HashSet<>();
         logoutUrlsOfA.add("http://www.example.com/a/logout");
         Map<String, ServiceProvider> map = new HashMap();
         ServiceProvider sp = new ServiceProvider(
