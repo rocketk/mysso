@@ -1,10 +1,9 @@
-import mysso.serviceprovider.ServiceProvider;
-import mysso.supports.jdbc.serviceprovider.registry.mybatis.dao.ServiceProviderPoMapper;
+package mysso.supports.jdbc.serviceprovider.registry.mybatis.dao;
+
 import mysso.supports.jdbc.serviceprovider.registry.mybatis.model.ServiceProviderPo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

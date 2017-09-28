@@ -13,10 +13,11 @@ public enum AccessServiceProviderPolicy {
         this.name = name;
         this.index = index;
     }
-    public String getName(int index) {
+
+    public static AccessServiceProviderPolicy valueOf(int index) {
         for (AccessServiceProviderPolicy item : AccessServiceProviderPolicy.values()) {
             if (item.index == index) {
-                return item.getName();
+                return item;
             }
         }
         return null;
@@ -37,4 +38,6 @@ public enum AccessServiceProviderPolicy {
     public void setIndex(int index) {
         this.index = index;
     }
+
+
 }

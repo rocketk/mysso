@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +21,8 @@ public class ServiceProvider implements Serializable {
     protected Set<String> logoutUrls;
     protected Set<String> neededAttributes;
     protected AccessServiceProviderPolicy accessServiceProviderPolicy = AccessServiceProviderPolicy.ALLOW_ALL;
+    protected Date createdTime;
+    protected Date modifiedTime;
 
     public ServiceProvider() {
     }
@@ -107,6 +110,22 @@ public class ServiceProvider implements Serializable {
 
     public void setHomeUrl(String homeUrl) {
         this.homeUrl = homeUrl;
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public Date getModifiedTime() {
+        return modifiedTime;
+    }
+
+    public void setModifiedTime(Date modifiedTime) {
+        this.modifiedTime = modifiedTime;
     }
 
     @Override
