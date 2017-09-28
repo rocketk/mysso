@@ -13,7 +13,6 @@ import java.util.Set;
  * Created by pengyu.
  */
 public abstract class AbstractServiceProviderRegistryTest {
-
     @Test
     public void verifyCRUD() {
         String spIdA = "sp-aaaa";
