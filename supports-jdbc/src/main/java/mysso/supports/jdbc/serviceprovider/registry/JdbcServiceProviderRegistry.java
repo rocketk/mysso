@@ -72,6 +72,7 @@ public class JdbcServiceProviderRegistry implements ServiceProviderRegistry{
             for (String attribute : neededAttributesArray) {
                 neededAttributesSet.add(attribute);
             }
+            sp.setNeededAttributes(neededAttributesSet);
         }
         if (po.getLogoutUrls() != null) {
             Set<String> logoutUrlsSet = new HashSet<>();
@@ -79,6 +80,7 @@ public class JdbcServiceProviderRegistry implements ServiceProviderRegistry{
             for (String logoutUrl : logoutUrlsArray) {
                 logoutUrlsSet.add(logoutUrl);
             }
+            sp.setLogoutUrls(logoutUrlsSet);
         }
         return sp;
     }
