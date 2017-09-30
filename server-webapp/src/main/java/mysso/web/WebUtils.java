@@ -1,20 +1,23 @@
 package mysso.web;
 
 import mysso.authentication.Authentication;
+import mysso.session.Session;
+import mysso.session.registry.SessionRegistry;
 import mysso.ticket.TicketGrantingTicket;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * Created by pengyu.
  */
 public class WebUtils {
     private String tgcNameInCookie;
+    private String sessionIdNameInCookie;
     private String authNameInSession;
+    private SessionRegistry sessionRegistry;
 
     public boolean isAuthenticated(HttpServletRequest request, HttpServletResponse response) {
         // check tgc from cookies
@@ -24,7 +27,7 @@ public class WebUtils {
         }
         String tgtId = tgc.getValue();
         // check authentication from session
-        Object authenticationObj = request.getSession().getAttribute(authNameInSession);
+        Object authenticationObj = getAuthenticationFromSession(request);
         if (authenticationObj == null) {
 //            deleteCookieByName(response, tgc.getName());
             return false;
@@ -40,11 +43,16 @@ public class WebUtils {
     }
 
     public Authentication getAuthenticationFromSession(HttpServletRequest request){
-        Object authenticationObj = request.getSession().getAttribute(authNameInSession);
+        Object authenticationObj = getSessionFromRequest(request).get(authNameInSession);
         if (authenticationObj == null) {
             return null;
         }
         return (Authentication) authenticationObj;
+    }
+
+    public void putAuthenticationToSession(HttpServletRequest request, Authentication authentication) {
+        Session session = getSessionFromRequest(request);
+        session.put(authNameInSession, authentication);
     }
 
     public Cookie extractCookieByName(HttpServletRequest request, String name) {
@@ -70,9 +78,9 @@ public class WebUtils {
      * @param request
      */
     public void expireTGT(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
+        Session session = getSessionFromRequest(request);
         if (session != null) {
-            Authentication authentication = (Authentication) session.getAttribute(authNameInSession);
+            Authentication authentication = (Authentication) session.get(authNameInSession);
             authentication.getTicketGrantingTicket().markExpired();
         }
     }
@@ -87,15 +95,25 @@ public class WebUtils {
     public TicketGrantingTicket destroySession(HttpServletRequest request, HttpServletResponse response) {
         // delete tgc from cookies
         deleteCookieByName(response, tgcNameInCookie);
-        HttpSession session = request.getSession(false);
+        deleteCookieByName(response, sessionIdNameInCookie);
+        Session session = getSessionFromRequest(request);
         if (session != null) {
             // invalidate TGT
-            Authentication authentication = (Authentication) session.getAttribute(authNameInSession);
+            Authentication authentication = (Authentication) session.get(authNameInSession);
             TicketGrantingTicket ticketGrantingTicket = authentication.getTicketGrantingTicket();
             ticketGrantingTicket.markExpired();
             // invalidate session
-            session.invalidate();
+            sessionRegistry.remove(session);
             return ticketGrantingTicket;
+        }
+        return null;
+    }
+
+    public Session getSessionFromRequest(HttpServletRequest request) {
+        Cookie cookie = extractCookieByName(request, sessionIdNameInCookie);
+        if (cookie != null) {
+            String sessionId = cookie.getValue();
+            return sessionRegistry.getSession(sessionId);
         }
         return null;
     }
@@ -106,5 +124,13 @@ public class WebUtils {
 
     public void setAuthNameInSession(String authNameInSession) {
         this.authNameInSession = authNameInSession;
+    }
+
+    public void setSessionIdNameInCookie(String sessionIdNameInCookie) {
+        this.sessionIdNameInCookie = sessionIdNameInCookie;
+    }
+
+    public void setSessionRegistry(SessionRegistry sessionRegistry) {
+        this.sessionRegistry = sessionRegistry;
     }
 }

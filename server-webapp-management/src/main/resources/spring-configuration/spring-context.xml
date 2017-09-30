@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:property-placeholder ignore-unresolvable="true" location="classpath:config.properties" />
+
+    <bean id="ticketRegistry" class="mysso.ticket.registry.InMemoryTicketRegistry"/>
+    <bean id="ticketManager" class="mysso.ticket.TicketManagerImpl">
+        <property name="ticketRegistry" ref="ticketRegistry"/>
+        <property name="livingTimeForServiceTicket" value="60000"/>
+        <property name="livingTimeForToken" value="600000"/>
+        <property name="ticketGrantingTicketIdGenerator" ref="ticketGrantingTicketIdGenerator"/>
+        <property name="serviceTicketIdGenerator" ref="serviceTicketIdGenerator"/>
+        <property name="tokenIdGenerator" ref="tokenIdGenerator"/>
+    </bean>
+
+    <bean id="ticketGrantingTicketIdGenerator" class="mysso.util.UUIDGenerator">
+        <property name="prefix" value="tgt-"/>
+        <property name="suffix" value=""/>
+    </bean>
+    <bean id="serviceTicketIdGenerator" class="mysso.util.UUIDGenerator">
+        <property name="prefix" value="st-"/>
+        <property name="suffix" value=""/>
+    </bean>
+    <bean id="tokenIdGenerator" class="mysso.util.UUIDGenerator">
+        <property name="prefix" value="tk-"/>
+        <property name="suffix" value=""/>
+    </bean>
+
+    <bean id="passwordEncoder" class="mysso.authentication.handler.PlainTextPasswordEncoder"/>
+
+    <bean id="serviceProviderRegistry" class="mysso.supports.jdbc.serviceprovider.registry.JdbcServiceProviderRegistry"/>
+
+    <bean id="logoutManager" class="mysso.logout.DefaultLogoutManagerImpl">
+        <property name="logoutHandler" ref="logoutHandler"/>
+        <property name="serviceProviderRegistry" ref="serviceProviderRegistry"/>
+        <property name="ticketRegistry" ref="ticketRegistry"/>
+    </bean>
+
+    <bean id="logoutHandler" class="mysso.logout.HttpLogoutHandler">
+    </bean>
+
+    <bean id="secretPasscodeValidator" class="mysso.security.GoogleAuthSecretPasscodeValidator"
+        c:googleAuthenticator-ref="googleAuthenticator"/>
+    <bean id="googleAuthenticator" class="com.warrenstrange.googleauth.GoogleAuthenticator"/>
+
+    <!-- filters -->
+    <bean id="characterEncodingFilter" class="org.springframework.web.filter.CharacterEncodingFilter">
+        <property name="encoding" value="UTF-8"/>
+        <property name="forceEncoding" value="true"/>
+    </bean>
+</beans>

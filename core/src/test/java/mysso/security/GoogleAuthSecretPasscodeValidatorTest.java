@@ -1,17 +1,18 @@
-package mysso.supports.otp.security;
+package mysso.security;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import static org.junit.Assert.*;
+
 /**
- * Created by pengyu
+ * Created by pengyu.
  */
-public class GoogleAutenticatorSecretPasscodeValidatorTest {
+public class GoogleAuthSecretPasscodeValidatorTest {
     protected GoogleAuthSecretPasscodeValidator secretPasscodeValidator;
     protected GoogleAuthenticator googleAuthenticator;
 

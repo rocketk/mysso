@@ -38,34 +38,6 @@
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
-    <bean class="mysso.web.AuthenticationController">
-        <property name="authenticationManager" ref="authenticationManager"/>
-        <property name="ticketManager" ref="ticketManager"/>
-        <property name="credentialFactory" ref="credentialFactory"/>
-        <property name="serviceProviderRegistry" ref="serviceProviderRegistry"/>
-        <property name="webUtils" ref="webUtils"/>
-        <property name="logoutManager" ref="logoutManager"/>
-        <property name="authNameInSession" value="authentication"/>
-        <property name="spidNameInParams" value="${spidNameInParams}"/>
-        <property name="tgcNameInCookie" value="${tgcNameInCookie}"/>
-    </bean>
-    <bean id="credentialFactory" class="mysso.authentication.credential.UsernamePasswordCredentialFactory">
-        <property name="keyForUsername" value="username"/>
-        <property name="keyForPassword" value="password"/>
-    </bean>
-    <bean id="webUtils" class="mysso.web.mysso.web.admin.authentication.WebUtils">
-        <property name="authNameInSession" value="authentication"/>
-        <property name="tgcNameInCookie" value="${tgcNameInCookie}"/>
-    </bean>
-    <bean class="mysso.web.HomeController">
-        <property name="serviceProviderRegistry" ref="serviceProviderRegistry"/>
-    </bean>
-    <bean class="mysso.web.ValidationController">
-        <property name="principalResolver" ref="principalResolver"/>
-        <property name="serviceProviderRegistry" ref="serviceProviderRegistry"/>
-        <property name="ticketManager" ref="ticketManager"/>
-        <property name="secretPasscodeValidator" ref="secretPasscodeValidator"/>
-    </bean>
 
     <mvc:interceptors>
         <mvc:interceptor>

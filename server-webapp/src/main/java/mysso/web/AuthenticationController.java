@@ -41,8 +41,6 @@ public class AuthenticationController {
 
     private WebUtils webUtils;
 
-    private String authNameInSession;
-
     private String tgcNameInCookie;
 
     private String spidNameInParams;
@@ -66,7 +64,7 @@ public class AuthenticationController {
             // 如果已登录, 则检查参数spid所表示的 service provider 是否正确
             // 如果没问题, 则重定向到这个 service provider 的主页, 否则重定向到mysso的home页
             if (sp != null) {
-                Authentication authentication = (Authentication) request.getSession().getAttribute(authNameInSession);
+                Authentication authentication = webUtils.getAuthenticationFromSession(request);
                 ServiceTicket st = ticketManager.grantServiceTicket(authentication.getTicketGrantingTicket(), spid);
                 return "redirect:" + appendParamToUrl(sp.getHomeUrl(), Constants.PARAM_SERVICE_TICKET, st.getId());
             } else {
@@ -85,14 +83,14 @@ public class AuthenticationController {
         Authentication authentication = authenticationManager.authenticate(credential);
         if (authentication != null && authentication.isSuccess()) {
             // todo reset sessionId
-            request.getSession().invalidate();
+            webUtils.destroySession(request, response);
             // set cookies
             Cookie cookie = new Cookie(tgcNameInCookie, authentication.getTicketGrantingTicket().getId());
             cookie.setPath(request.getContextPath());
             cookie.setHttpOnly(true);
             response.addCookie(cookie);
             // put principal and authentication into session
-            request.getSession().setAttribute(authNameInSession, authentication);
+            webUtils.putAuthenticationToSession(request, authentication);
             // check service provider, redirect to the serviceProvider's home url.
             String spid = params.get(spidNameInParams);
             if (spid != null) {
@@ -178,10 +176,6 @@ public class AuthenticationController {
 
     public void setWebUtils(WebUtils webUtils) {
         this.webUtils = webUtils;
-    }
-
-    public void setAuthNameInSession(String authNameInSession) {
-        this.authNameInSession = authNameInSession;
     }
 
     public void setTgcNameInCookie(String tgcNameInCookie) {

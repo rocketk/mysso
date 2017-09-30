@@ -42,6 +42,11 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons.collections.version}</version>
+        </dependency>
         <!-- for test -->
         <dependency>
             <groupId>junit</groupId>
@@ -56,9 +61,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>${commons.collections.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -76,6 +82,12 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- google authentication otp -->
+        <dependency>
+            <groupId>com.warrenstrange</groupId>
+            <artifactId>googleauth</artifactId>
+            <version>1.1.1</version>
         </dependency>
         <!--fastjson-->
         <dependency>
@@ -96,6 +108,7 @@
                     <execution>
                         <goals>
                             <goal>test-jar</goal>
+                            <goal></goal>
                         </goals>
                     </execution>
                 </executions>

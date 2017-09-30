@@ -1,7 +1,6 @@
-package mysso.supports.otp.security;
+package mysso.security;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
-import mysso.security.SecretPasscodeValidator;
 import org.apache.commons.lang3.Validate;
 
 /**

@@ -99,7 +99,7 @@
     <bean id="logoutHandler" class="mysso.logout.HttpLogoutHandler">
     </bean>
 
-    <bean id="secretPasscodeValidator" class="mysso.supports.otp.security.GoogleAuthSecretPasscodeValidator"
+    <bean id="secretPasscodeValidator" class="mysso.security.GoogleAuthSecretPasscodeValidator"
         c:googleAuthenticator-ref="googleAuthenticator"/>
     <bean id="googleAuthenticator" class="com.warrenstrange.googleauth.GoogleAuthenticator"/>
 

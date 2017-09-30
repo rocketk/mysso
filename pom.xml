@@ -11,9 +11,9 @@
     <modules>
         <module>core</module>
         <module>server-webapp</module>
+        <module>server-webapp-management</module>
         <module>protocol</module>
         <module>supports-redis</module>
-        <module>supports-otp</module>
         <module>supports-jdbc</module>
     </modules>
     <properties>
