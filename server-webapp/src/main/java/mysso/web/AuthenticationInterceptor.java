@@ -1,5 +1,6 @@
 package mysso.web;
 
+import mysso.authentication.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -19,6 +20,8 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         boolean isAuthenticated = webUtils.isAuthenticated(request, response);
         if (isAuthenticated) {
+            Authentication authentication = webUtils.getAuthenticationFromSession(request);
+            request.setAttribute("authentication", authentication);
             return true;
         }
         response.sendRedirect(request.getContextPath()+"/login");

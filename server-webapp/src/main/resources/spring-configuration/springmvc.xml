@@ -55,6 +55,10 @@
     <bean id="webUtils" class="mysso.web.WebUtils">
         <property name="authNameInSession" value="authentication"/>
         <property name="tgcNameInCookie" value="${tgcNameInCookie}"/>
+        <property name="sessionIdNameInCookie" value="${sessionIdNameInCookie}"/>
+        <property name="sessionManager" ref="sessionFactory"/>
+        <property name="sessionMaxAge" value="3600"/>
+        <property name="tgcMaxAge" value="3600"/>
     </bean>
     <bean class="mysso.web.HomeController">
         <property name="serviceProviderRegistry" ref="serviceProviderRegistry"/>

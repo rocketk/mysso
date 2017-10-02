@@ -16,7 +16,7 @@
     <bean id="ticketManager" class="mysso.ticket.TicketManagerImpl">
         <property name="ticketRegistry" ref="ticketRegistry"/>
         <property name="livingTimeForServiceTicket" value="60000"/>
-        <property name="livingTimeForToken" value="600000"/>
+        <property name="livingTimeForToken" value="3000"/>
         <property name="ticketGrantingTicketIdGenerator" ref="ticketGrantingTicketIdGenerator"/>
         <property name="serviceTicketIdGenerator" ref="serviceTicketIdGenerator"/>
         <property name="tokenIdGenerator" ref="tokenIdGenerator"/>

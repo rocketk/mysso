@@ -15,5 +15,11 @@
         <logger name="org" level="INFO" additivity="false">
             <AppenderRef ref="Console"/>
         </logger>
+        <logger name="org.springframework.core" level="info"/>
+        <logger name="org.springframework.beans" level="info"/>
+        <logger name="org.springframework.context" level="info"/>
+        <logger name="org.springframework.web" level="info"/>
+        <logger name="org.jboss.netty" level="warn"/>
+        <logger name="org.apache.http" level="warn"/>
     </Loggers>
 </Configuration>

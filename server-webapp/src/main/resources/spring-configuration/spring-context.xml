@@ -15,8 +15,8 @@
     <bean id="ticketRegistry" class="mysso.ticket.registry.InMemoryTicketRegistry"/>
     <bean id="ticketManager" class="mysso.ticket.TicketManagerImpl">
         <property name="ticketRegistry" ref="ticketRegistry"/>
-        <property name="livingTimeForServiceTicket" value="60000"/>
-        <property name="livingTimeForToken" value="600000"/>
+        <property name="livingTimeForServiceTicket" value="10000"/>
+        <property name="livingTimeForToken" value="300000"/>
         <property name="ticketGrantingTicketIdGenerator" ref="ticketGrantingTicketIdGenerator"/>
         <property name="serviceTicketIdGenerator" ref="serviceTicketIdGenerator"/>
         <property name="tokenIdGenerator" ref="tokenIdGenerator"/>
@@ -32,6 +32,10 @@
     </bean>
     <bean id="tokenIdGenerator" class="mysso.util.UUIDGenerator">
         <property name="prefix" value="tk-"/>
+        <property name="suffix" value=""/>
+    </bean>
+    <bean id="sessionIdGenerator" class="mysso.util.UUIDGenerator">
+        <property name="prefix" value="sid-"/>
         <property name="suffix" value=""/>
     </bean>
 
@@ -102,6 +106,12 @@
     <bean id="secretPasscodeValidator" class="mysso.security.GoogleAuthSecretPasscodeValidator"
         c:googleAuthenticator-ref="googleAuthenticator"/>
     <bean id="googleAuthenticator" class="com.warrenstrange.googleauth.GoogleAuthenticator"/>
+
+    <bean id="sessionRegistry" class="mysso.session.registry.InMemorySessionRegistry"/>
+    <bean id="sessionFactory" class="mysso.session.SessionManager">
+        <property name="sessionRegistry" ref="sessionRegistry"/>
+        <property name="sessionIdGeneratory" ref="sessionIdGenerator"/>
+    </bean>
 
     <!-- filters -->
     <bean id="characterEncodingFilter" class="org.springframework.web.filter.CharacterEncodingFilter">

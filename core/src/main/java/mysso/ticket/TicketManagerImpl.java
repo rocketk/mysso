@@ -134,8 +134,10 @@ public class TicketManagerImpl implements TicketManager {
             long now = System.currentTimeMillis();
             Token newToken = new Token(tokenIdGenerator.getNewId(), now, tk.getCredentialId(),
                     tk.getTicketGrantingTicketId(), tk.getServiceProviderId(), now + livingTimeForToken);
+            tgt.getTokenIds().add(newToken.getId());
             ticketRegistry.delete(tk.getId(), Token.class);
             ticketRegistry.add(newToken);
+            ticketRegistry.update(tgt);
             return new TicketValidateResult(Constants.VALID_BUT_EXPIRED, "token is valid but expired", newToken);
         }
         return new TicketValidateResult(Constants.VALID_TICKET, "valid token", tk);

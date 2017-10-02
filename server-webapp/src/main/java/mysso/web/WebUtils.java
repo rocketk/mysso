@@ -2,13 +2,15 @@ package mysso.web;
 
 import mysso.authentication.Authentication;
 import mysso.session.Session;
-import mysso.session.registry.SessionRegistry;
+import mysso.session.SessionManager;
 import mysso.ticket.TicketGrantingTicket;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Created by pengyu.
@@ -17,7 +19,9 @@ public class WebUtils {
     private String tgcNameInCookie;
     private String sessionIdNameInCookie;
     private String authNameInSession;
-    private SessionRegistry sessionRegistry;
+    private int tgcMaxAge;
+    private int sessionMaxAge;
+    private SessionManager sessionManager;
 
     public boolean isAuthenticated(HttpServletRequest request, HttpServletResponse response) {
         // check tgc from cookies
@@ -43,15 +47,24 @@ public class WebUtils {
     }
 
     public Authentication getAuthenticationFromSession(HttpServletRequest request){
-        Object authenticationObj = getSessionFromRequest(request).get(authNameInSession);
-        if (authenticationObj == null) {
-            return null;
+        Session session = getSessionFromRequest(request);
+        if (session != null) {
+            Object authenticationObj = session.get(authNameInSession);
+            if (authenticationObj != null) {
+                return (Authentication) authenticationObj;
+            }
         }
-        return (Authentication) authenticationObj;
+        return null;
     }
 
-    public void putAuthenticationToSession(HttpServletRequest request, Authentication authentication) {
-        Session session = getSessionFromRequest(request);
+    public void handleLoginSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        destroySession(request, response);
+        putAuthenticationToSession(request, response, authentication);
+        addCookie(response, tgcNameInCookie, authentication.getTicketGrantingTicket().getId(), tgcMaxAge);
+    }
+
+    private void putAuthenticationToSession(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        Session session = getSessionFromRequest(request, response, true);
         session.put(authNameInSession, authentication);
     }
 
@@ -68,8 +81,16 @@ public class WebUtils {
     }
 
     public void deleteCookieByName(HttpServletResponse response, String name) {
+        Validate.notNull(name, "cookie name is null");
         Cookie cookie = new Cookie(name, null);
         cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
+    public void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
+        Validate.notNull(name, "cookie name is null");
+        Cookie cookie = new Cookie(name, value);
+        cookie.setMaxAge(maxAge);
+        cookie.setHttpOnly(true);
         response.addCookie(cookie);
     }
 
@@ -77,13 +98,13 @@ public class WebUtils {
      * 使session中的tgt过期
      * @param request
      */
-    public void expireTGT(HttpServletRequest request) {
-        Session session = getSessionFromRequest(request);
-        if (session != null) {
-            Authentication authentication = (Authentication) session.get(authNameInSession);
-            authentication.getTicketGrantingTicket().markExpired();
-        }
-    }
+//    public void expireTGT(HttpServletRequest request) {
+//        Session session = getSessionFromRequest(request, false);
+//        if (session != null) {
+//            Authentication authentication = (Authentication) session.get(authNameInSession);
+//            authentication.getTicketGrantingTicket().markExpired();
+//        }
+//    }
 
     /**
      * 销毁当前用户的登录信息，包括session，cookie
@@ -96,24 +117,41 @@ public class WebUtils {
         // delete tgc from cookies
         deleteCookieByName(response, tgcNameInCookie);
         deleteCookieByName(response, sessionIdNameInCookie);
-        Session session = getSessionFromRequest(request);
+        // invalidate httpSession
+        HttpSession httpSession = request.getSession();
+        if (httpSession != null) {
+            httpSession.invalidate();
+        }
+        Session session = getSessionFromRequest(request, response, false);
         if (session != null) {
             // invalidate TGT
             Authentication authentication = (Authentication) session.get(authNameInSession);
             TicketGrantingTicket ticketGrantingTicket = authentication.getTicketGrantingTicket();
             ticketGrantingTicket.markExpired();
             // invalidate session
-            sessionRegistry.remove(session);
+            sessionManager.invalidAndRemoveSession(session.getId());
             return ticketGrantingTicket;
         }
         return null;
     }
 
     public Session getSessionFromRequest(HttpServletRequest request) {
+        return getSessionFromRequest(request, null, false);
+    }
+
+    public Session getSessionFromRequest(HttpServletRequest request, HttpServletResponse response, boolean createNewSessionIfNonExists) {
         Cookie cookie = extractCookieByName(request, sessionIdNameInCookie);
         if (cookie != null) {
             String sessionId = cookie.getValue();
-            return sessionRegistry.getSession(sessionId);
+            Session session = sessionManager.getSession(sessionId);
+            if (session != null) {
+                return session;
+            }
+        }
+        if (createNewSessionIfNonExists) {
+            Session session = sessionManager.newSession();
+            addCookie(response, sessionIdNameInCookie, session.getId(), sessionMaxAge);
+            return session;
         }
         return null;
     }
@@ -130,7 +168,15 @@ public class WebUtils {
         this.sessionIdNameInCookie = sessionIdNameInCookie;
     }
 
-    public void setSessionRegistry(SessionRegistry sessionRegistry) {
-        this.sessionRegistry = sessionRegistry;
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+
+    public void setTgcMaxAge(int tgcMaxAge) {
+        this.tgcMaxAge = tgcMaxAge;
+    }
+
+    public void setSessionMaxAge(int sessionMaxAge) {
+        this.sessionMaxAge = sessionMaxAge;
     }
 }

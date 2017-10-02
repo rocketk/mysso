@@ -5,6 +5,12 @@
     <title>error</title>
 </head>
 <body>
-<p>error</p>
+<%
+    Exception exception = (Exception) request.getAttribute("javax.servlet.error.exception");
+    exception.printStackTrace();
+%>
+<c:set var="exception" value="${javax.servlet.error.exception}"/>
+<p>exception: <span style="color: red;"><%=exception.getClass().getCanonicalName() + exception.getMessage()%></span> </p>
+
 </body>
 </html>
