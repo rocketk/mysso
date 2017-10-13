@@ -23,4 +23,12 @@ public class AdminController {
         request.setAttribute("allTGTs", allTGTs);
         return "monitor";
     }
+
+    public void setTicketRegistry(TicketRegistry ticketRegistry) {
+        this.ticketRegistry = ticketRegistry;
+    }
+
+    public void setServiceProviderRegistry(ServiceProviderRegistry serviceProviderRegistry) {
+        this.serviceProviderRegistry = serviceProviderRegistry;
+    }
 }
