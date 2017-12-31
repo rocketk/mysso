@@ -37,8 +37,26 @@
 
     <bean id="passwordEncoder" class="mysso.authentication.handler.PlainTextPasswordEncoder"/>
 
-    <bean id="serviceProviderRegistry" class="mysso.supports.jdbc.serviceprovider.registry.JdbcServiceProviderRegistry"/>
-
+    <!--<bean id="serviceProviderRegistry" class="mysso.supports.jdbc.serviceprovider.registry.JdbcServiceProviderRegistry"/>-->
+    <bean id="serviceProviderRegistry" class="mysso.serviceprovider.registry.InMemoryServiceProviderRegistry" c:map-ref="serviceProvidersMap"/>
+    <util:map id="serviceProvidersMap">
+        <entry key="sp-859f3de832604305b5c035713561f4b9">
+            <bean class="mysso.serviceprovider.ServiceProvider">
+                <property name="id" value="sp-859f3de832604305b5c035713561f4b9"/>
+                <property name="description" value="sp-SampleServiceProvider001"/>
+                <property name="name" value="SampleServiceProvider001"/>
+                <!-- 如果没有首页, 则任意填写一个页面充当首页 -->
+                <property name="homeUrl" value="http://localhost:9080/demo/index.jsp"/>
+                <property name="accessServiceProviderPolicy" value="ALLOW_ALL"/>
+                <!-- logoutUrls 可以是多个，用;隔开，
+                    如果客户端应用是集群，并且客户端集群已经做好了session共享，此处可以填负载均衡地址，
+                    如果客户端应用是集群，但是没有做session共享，那么这里要填写每一个实例的地址（ip地址），
+                    而不允许填写负载均衡地址-->
+                <property name="logoutUrls" value="http://127.0.0.1:9080/demo/backChannelLogout"/>
+                <property name="secretKey" value="0123456789ABCDEF"/>
+            </bean>
+        </entry>
+    </util:map>
     <bean id="logoutManager" class="mysso.logout.DefaultLogoutManagerImpl">
         <property name="logoutHandler" ref="logoutHandler"/>
         <property name="serviceProviderRegistry" ref="serviceProviderRegistry"/>
