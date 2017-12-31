@@ -12,7 +12,11 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     <context:property-placeholder ignore-unresolvable="true" location="classpath:config.properties" />
 
-    <bean id="ticketRegistry" class="mysso.ticket.registry.InMemoryTicketRegistry"/>
+    <bean id="ticketRegistry" class="mysso.supports.redis.ticket.registry.RedisTicketRegistry">
+        <property name="pool">
+            <bean class="redis.clients.jedis.JedisPool"/>
+        </property>
+    </bean>
     <bean id="ticketManager" class="mysso.ticket.TicketManagerImpl">
         <property name="ticketRegistry" ref="ticketRegistry"/>
         <property name="livingTimeForServiceTicket" value="60000"/>
