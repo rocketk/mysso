@@ -11,5 +11,4 @@ public class StatisticsUtils {
     private TicketRegistry ticketRegistry;
     private ServiceProviderRegistry serviceProviderRegistry;
     private SessionManager sessionManager;
-    public
 }
